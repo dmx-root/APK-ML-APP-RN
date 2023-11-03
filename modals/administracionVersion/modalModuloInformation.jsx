@@ -7,6 +7,7 @@ import { useMainContex } from '../../context/mainContext';
 import { ModuloInformationComponentAdmin } from '../../components/adminVersion/moduloInformationComponentAdmin';
 import { ModuloIconList3 } from '../../view/iconosSvg';
 import { EmptyInterfaz } from '../../components/allVersions/emptyInterfaz';
+import { EmployeeInformationComponent } from '../../components/adminVersion/employeeInformationComponent';
 
 const {width,height}=Dimensions.get('window');
 const currentColorMain4='#e1e1e1';  //color de letra resaltado
@@ -22,7 +23,7 @@ export function ModalModuloInformationAdmin(){
                     <View style={StyleInfoViewOP.window}>
                         <View style={StyleInfoViewOP.header}>
                             <View style={StyleInfoViewOP.columnIcon}>
-                                <ModuloIconList3 color={'#999'} size={height*0.06}/>
+                                <ModuloIconList3 color={'#AAA'} size={height*0.07}/>
                             </View>
                             
                             <View style={StyleInfoViewOP.column}>
@@ -81,18 +82,23 @@ export function ModalModuloInformationAdmin(){
                             </View>
                         </View>
                         <View style={StyleInfoViewOP.titleContainer}>
-                            <Text style={{fontSize:width*0.033,fontWeight:'bold',color:currentColorMain4}}>ANALITYCS</Text>
+                            <Text style={{fontSize:width*0.033,fontWeight:'bold',color:currentColorMain4}}>LISTA DE OPERARIOS</Text>
                         </View>
-                        <View style={StyleInfoViewOP.analitycs}>
-                            <View style={StyleInfoViewOP.column1}>
-                                <View style={StyleInfoViewOP.row1}>
-                                    <View style={StyleInfoViewOP.tittleContainer}>
-                                        <Text style={StyleInfoViewOP.title}>HORA-I</Text>
-                                    </View>
-                                    <View style={StyleInfoViewOP.contentContainer}>
-                                        <Text style={StyleInfoViewOP.content}>Content</Text>
-                                    </View>
-                                </View>
+                        
+                        <View style={StyleInfoViewOP.employeers}>
+                            <View style={StyleInfoViewOP.frame}>
+                                {/* <EmptyInterfaz data={'Sin Operarios'}/> */}
+                                <EmployeeInformationComponent data={{operario:210}} index={1}/>
+                                <EmployeeInformationComponent data={{operario:215}} index={2}/>
+                                <EmployeeInformationComponent data={{operario:310}} index={3}/>
+                                <EmployeeInformationComponent data={{operario:610}} index={4}/>
+                                <EmployeeInformationComponent data={{operario:610}} index={4}/>
+                                <EmployeeInformationComponent data={{operario:610}} index={4}/>
+                                <EmployeeInformationComponent data={{operario:610}} index={4}/>
+                                <EmployeeInformationComponent data={{operario:610}} index={4}/>
+                            </View>
+                            <View style={StyleInfoViewOP.frame}>
+                                {/* <EmptyInterfaz data={'Sin Operarios'}/> */}
                                 <View style={StyleInfoViewOP.row1}>
                                     <View style={StyleInfoViewOP.tittleContainer}>
                                         <Text style={StyleInfoViewOP.title}>COMPROMISO</Text>
@@ -103,34 +109,23 @@ export function ModalModuloInformationAdmin(){
                                 </View>
                                 <View style={StyleInfoViewOP.row1}>
                                     <View style={StyleInfoViewOP.tittleContainer}>
-                                        <Text style={StyleInfoViewOP.title}>No. OPERA</Text>
+                                        <Text style={StyleInfoViewOP.title}>HORA-I</Text>
                                     </View>
                                     <View style={StyleInfoViewOP.contentContainer}>
-                                        <Text style={StyleInfoViewOP.content}>Content</Text>
+                                        <Text style={StyleInfoViewOP.content}>10:25</Text>
                                     </View>
                                 </View>
-                                <View style={StyleInfoViewOP.row1}>
-                                    <View style={StyleInfoViewOP.tittleContainer}>
-                                        <Text style={StyleInfoViewOP.title}>No. OPERA</Text>
-                                    </View>
-                                    <View style={StyleInfoViewOP.contentContainer}>
-                                        <Text style={StyleInfoViewOP.content}>Content</Text>
-                                    </View>
-                                </View>
-                                
-                            </View>
-                            <View style={StyleInfoViewOP.column1}>
                                 <View style={StyleInfoViewOP.row1}>
                                     <View style={StyleInfoViewOP.tittleContainer}>
                                         <Text style={StyleInfoViewOP.title}>HORA-F</Text>
                                     </View>
                                     <View style={StyleInfoViewOP.contentContainer}>
-                                        <Text style={StyleInfoViewOP.content}>Content</Text>
+                                        <Text style={StyleInfoViewOP.content}>11:25</Text>
                                     </View>
                                 </View>
                                 <View style={StyleInfoViewOP.row1}>
                                     <View style={StyleInfoViewOP.tittleContainer}>
-                                        <Text style={StyleInfoViewOP.title}>REVISOR/A</Text>
+                                        <Text style={StyleInfoViewOP.title}>No. OPERA</Text>
                                     </View>
                                     <View style={StyleInfoViewOP.contentContainer}>
                                         <Text style={StyleInfoViewOP.content}>Content</Text>
@@ -138,7 +133,7 @@ export function ModalModuloInformationAdmin(){
                                 </View>
                                 <View style={StyleInfoViewOP.row1}>
                                     <View style={StyleInfoViewOP.tittleContainer}>
-                                        <Text style={StyleInfoViewOP.title}>Tittle</Text>
+                                        <Text style={StyleInfoViewOP.title}>No. OPERA</Text>
                                     </View>
                                     <View style={StyleInfoViewOP.contentContainer}>
                                         <Text style={StyleInfoViewOP.content}>Content</Text>
@@ -146,28 +141,37 @@ export function ModalModuloInformationAdmin(){
                                 </View>
                                 <View style={StyleInfoViewOP.row1}>
                                     <View style={StyleInfoViewOP.tittleContainer}>
-                                        <Text style={StyleInfoViewOP.title}>Tittle</Text>
+                                        <Text style={StyleInfoViewOP.title}>No. OPERA</Text>
                                     </View>
                                     <View style={StyleInfoViewOP.contentContainer}>
                                         <Text style={StyleInfoViewOP.content}>Content</Text>
                                     </View>
                                 </View>
-                                
-                            </View>
-                        </View>         
-                        <View style={StyleInfoViewOP.titleContainer}>
-                            <Text style={{fontSize:width*0.033,fontWeight:'bold',color:currentColorMain4}}>LISTA DE OPERARIOS</Text>
-                        </View>
-                        
-                        <View style={StyleInfoViewOP.employeers}>
-                            <View style={StyleInfoViewOP.frame}>
-                                <EmptyInterfaz data={'Sin Operarios'}/>
-                            </View>
-                            <View style={StyleInfoViewOP.frame}>
-                                <EmptyInterfaz data={'Sin Operarios'}/>
+                                <View style={StyleInfoViewOP.row1}>
+                                    <View style={StyleInfoViewOP.tittleContainer}>
+                                        <Text style={StyleInfoViewOP.title}>No. OPERA</Text>
+                                    </View>
+                                    <View style={StyleInfoViewOP.contentContainer}>
+                                        <Text style={StyleInfoViewOP.content}>Content</Text>
+                                    </View>
+                                </View>
+                                <View style={StyleInfoViewOP.row1}>
+                                    <View style={StyleInfoViewOP.tittleContainer}>
+                                        <Text style={StyleInfoViewOP.title}>No. OPERA</Text>
+                                    </View>
+                                    <View style={StyleInfoViewOP.contentContainer}>
+                                        <Text style={StyleInfoViewOP.content}>Content</Text>
+                                    </View>
+                                </View>
                             </View>
                             
-                        </View>         
+                        </View> 
+                        <View style={StyleInfoViewOP.titleContainer}>
+                            <Text style={{fontSize:width*0.033,fontWeight:'bold',color:currentColorMain4}}>ULTIMOS REGISTROS</Text>
+                        </View>
+                        <View style={StyleInfoViewOP.analitycs}>
+                          
+                        </View>                 
                     </View>
                 </TouchableWithoutFeedback>
             </View>
@@ -203,10 +207,12 @@ const StyleInfoViewOP=StyleSheet.create({
     frame:{
         height:'100%',
         width:'49%',
+        backgroundColor:'#00000008',
         borderRadius:height*0.005,
         borderWidth:height*0.0015,
         borderColor:currentColorMain4,
-        marginRight:'2%'
+        marginRight:'2%',
+        alignItems:'center'
     },
     analitycs:{
         borderRadius:height*0.005,
@@ -265,7 +271,7 @@ const StyleInfoViewOP=StyleSheet.create({
     },
     row1:{
         width:'100%',
-        height:'25%',
+        height:'12.5%',
         flexDirection:'row'
     },
     tittleContainer:{

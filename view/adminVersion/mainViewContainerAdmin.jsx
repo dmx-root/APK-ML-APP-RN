@@ -1,3 +1,4 @@
+import { Modal }                              from 'react-native';
 import { useMainContex }                      from '../../context/mainContext';
 import { useAdminContext }                    from '../../context/adminContext';
 import { ModalModulosListAdmin }              from '../../modals/administracionVersion/modalModulosListAdmin';
@@ -8,9 +9,8 @@ import { ModalRegisterEmployeesAdmin }        from '../../modals/administracionV
 import { ModalCreateOcrAdmin }                from '../../modals/administracionVersion/modalCreateOcrAdmin';
 import { ModalModulosInformationListAdmin }   from '../../modals/administracionVersion/modalModulosInformationListAdmin';
 import { AsideAdmin }                         from '../../modals/administracionVersion/asideAdmin';
+import { ModalModuloInformationAdmin }        from '../../modals/administracionVersion/modalModuloInformation';
 import {MainInterfazAdmin}                    from './mainInterfazAdmin';
-import { Modal }                              from 'react-native';
-import { ModalModuloInformationAdmin } from '../../modals/administracionVersion/modalModuloInformation';
 
 export function MainViewContainerAdmin({navigation}){
 

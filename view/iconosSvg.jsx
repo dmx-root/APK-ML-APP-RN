@@ -221,12 +221,12 @@ export function User2(props) {
   return (
     <Svg
       xmlns="http://www.w3.org/2000/svg"
-      width={height*0.03}
-      height={height*0.03}
+      width={height*0.045}
+      height={height*0.045}
       viewBox="0 0 24 24"
-      fill="none"
-      stroke="#bbb"
-      strokeWidth={3}
+      fill="#AAA"
+      stroke="#AAA"
+      strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
       className="feather feather-user"
@@ -567,7 +567,7 @@ export  function ModuloIconList3({color,size}) {
       width={size}
       height={size}
       viewBox="0 0 24 24"
-      fill="#DDD"
+      fill={'#BBB'}
       stroke={color}
       strokeWidth={1.6}
       strokeLinecap="round"

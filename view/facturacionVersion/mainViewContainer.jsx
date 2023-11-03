@@ -7,12 +7,13 @@ import { ModalSpecificationsOp }        from "../modalSpecificationsOp";
 import { ModalOcrList }                 from "../modalOcrList";
 import { MainInterfazFacturacion }      from "./mainInterfazFacturacion";
 import { Modal }                        from "react-native";
+import { AsideFacturacion }             from "../../modals/facturacionVersion/asideFacturacion";
 
 export function MainViewContainerFacturacion({navigation}){
     
     const {asideState,modalModulosList,modalModulosOcrList }=useFacturacionContext();
     const { modalOcrInfo, modalSpecificationOP, modalOcrList }=useMainContex();
-    
+    console.log(modalOcrInfo);
     return(
         <>
         
@@ -21,8 +22,7 @@ export function MainViewContainerFacturacion({navigation}){
               animationType="fade"
               transparent={true}
               visible={asideState}>
-                {/* <AsideInvitado navigation={navigation}/> */}
-                <></>
+                <AsideFacturacion navigation={navigation}/>
             </Modal>
              <Modal
               animationType="fade"

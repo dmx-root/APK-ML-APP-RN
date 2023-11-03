@@ -1,39 +1,47 @@
-import { LogOut, RoowLeft, User }                                                       from './iconosSvg.jsx';
-import { useMainContex }                                                                from '../context/mainContext.jsx';
+import { useFacturacionContext }                                                        from '../../context/facturacionContext.jsx';
+import { LogOut, RoowLeft, User, PlusSeg, PlusOcr }                                     from '../../view/iconosSvg.jsx'
+import { useMainContex }                                                                from '../../context/mainContext.jsx';
 import { Image, TouchableWithoutFeedback, Alert, ActivityIndicator}                     from 'react-native';
 import { StyleSheet, Text, View, Dimensions, TouchableOpacity}                          from 'react-native';
 import { useState }                                                                     from 'react';
-import AsyncStorage                                                                     from '@react-native-async-storage/async-storage';
-import { useInvitadoContext } from '../context/invitadoContext.jsx';
 
 const {width,height}=Dimensions.get('window');
 
 const currentColorMain='#44329C';   //azul oscuro
 
-export function AsideInvitado({navigation}){
-    const {setCurrentUser,
-        setUserToken,
-        setMainView}=useMainContex();
+export function AsideFacturacion({navigation}){
 
-    const { asideState,setAsideState }=useInvitadoContext();
-    
+    const {setCurrentUser, setUserToken,setMainView,loginUser,
+        setloginUser}=useMainContex();
+
+    const { setAsideState,setRegisterInfoSegundas}=useFacturacionContext()
+
     const[loading,setLoading]=useState(false);
-    const removeData = async () => {
-        try {
-          await AsyncStorage.removeItem('user-token-id');
-        } catch (error) {
-          console.error('Error al eliminar el valor:', error);
-        }
-      };
+
     const handlerCloseSesion=()=>{
+        setAsideState(false);
         setLoading(true);
-        removeData();
-        setCurrentUser({});
+        setCurrentUser(null);
         setUserToken(null);
         setMainView(0);
+        setloginUser({
+            userDocumentId:null,
+            userPassword:null
+        });
         setLoading(false);
-        setAsideState(false)
     }
+    const handlereSetProfile=()=>{
+        setAsideState(false);
+        navigation.navigate('ProfileInterface');
+    }
+    handlerTouchButtonExit=()=>{
+        setAsideState(false);
+        Alert.alert('¿Salir de la cuenta?','',[
+            {text: 'OK', onPress:handlerCloseSesion, style: 'cancel'},
+            {text: 'CANCEL'},
+            ]);
+    }
+
     if(loading){
         return(
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -48,10 +56,27 @@ export function AsideInvitado({navigation}){
                 <TouchableWithoutFeedback onPress={()=>{}}>
                     <View style={StyleAside.aside}>
                         <View style={StyleAside.headerAside}>
-                            <Image source={require('../media_public/img/tranparentLogo.png')} style={StyleAside.img}/>
+                            <Image source={require('../../media_public/img/tranparentLogo.png')} style={StyleAside.img}/>
                         </View>
                         <View style={StyleAside.bodyAside}>
                             <TouchableOpacity style={StyleAside.fieldOptionContainer} onPress={()=>{}}>
+                                <View style={StyleAside.iconOptionContainer}>
+                                    <PlusOcr/>
+                                </View>
+                                <View style={StyleAside.contentOptionContainer}>
+                                    <Text style={StyleAside.contentOptions}>REVISAR OCR</Text>
+                                </View>
+                            </TouchableOpacity>
+                            
+                            <TouchableOpacity style={StyleAside.fieldOptionContainer} onPress={()=>{}}>
+                                <View style={StyleAside.iconOptionContainer}>
+                                    <PlusSeg/>
+                                </View>
+                                <View style={StyleAside.contentOptionContainer}>
+                                    <Text style={StyleAside.contentOptions}>SEGUNDAS</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={StyleAside.fieldOptionContainer} onPress={handlereSetProfile}>
                                 <View style={StyleAside.iconOptionContainer}>
                                     <User/>
                                 </View>
@@ -59,10 +84,7 @@ export function AsideInvitado({navigation}){
                                     <Text style={StyleAside.contentOptions}>PERFIL</Text>
                                 </View>
                             </TouchableOpacity>
-                            <TouchableOpacity style={StyleAside.fieldOptionContainer} onPress={()=>Alert.alert('¿Salir de la cuenta?','',[
-                                {text: 'OK', onPress:handlerCloseSesion, style: 'cancel'},
-                                {text: 'CANCEL'},
-                                ])}>
+                            <TouchableOpacity style={StyleAside.fieldOptionContainer} onPress={handlerTouchButtonExit}>
                                 <View style={StyleAside.iconOptionContainer}>
                                     <LogOut/>
                                 </View>

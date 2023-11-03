@@ -22,7 +22,8 @@ export function MainInterfazFacturacion({navigation}){
     const [ocrList,setOcrList]=useState([]);
     const [loading,setLoading]=useState(true);
 
-    const ApiQueryUser=new QueryDataUsers(DNS,'/api/ml/user/sesion/',userToken);
+    // const ApiQueryUser=new QueryDataUsers(DNS,'/api/ml/user/sesion/',userToken);
+    const ApiQueryUser=new QueryDataUsers(DNS,'/api/ml/user/sesion/get/',userToken);
 
     useEffect(()=>{
         loadInformation(currentUser.user_document_id);
@@ -30,7 +31,7 @@ export function MainInterfazFacturacion({navigation}){
     async function loadInformation(){
         try {
             const response3=await ApiQueryUser.getSesion('none');
-
+            // console.log(response3.data.data)
             setLoading(false);
             setOpList(response3.data.data.opList);
             setOcrList(response3.data.data.ocrList.slice(0,3));
