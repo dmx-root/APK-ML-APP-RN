@@ -1,5 +1,9 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState }  from "react";
+import TimeAgo                                  from 'javascript-time-ago';
+import es                                       from 'javascript-time-ago/locale/es';
 
+TimeAgo.addDefaultLocale(es);
+const timeAgo = new TimeAgo('es-ES');
 
 const MainContext=createContext();
 
@@ -8,48 +12,53 @@ export const useMainContex=()=>{
 }
 
 export function MainContextProvider({children}){
-    const [valueL1A,setValueL1A]=useState("opcion1");
-    const [valueL1B,setValueL1B]=useState("opcion1");
-    const [valueL2,setValueL2]=useState("opcion1");
-    const [createOCRState, setCreateOCRState]=useState(false);
-    const [infoOCRState, setInfoOCRState]=useState(false);
-    const [signUpModal,setSignUpModal]=useState(false);
-    const [asideState,setAsideState]=useState(false);
-    const [modalEditState,setModalEditState]=useState(false);
-    const [modalRegisterState,setModalRegisterState]=useState(false);
-    const [modalAlertClearData,setmodalAlertClearData]=useState(false);
-    const [modalAlertSendData,setmodalAlertSendData]=useState(false);
-    const [modalParadaInmediate,setModalParadaInmediate]=useState(false);
-    const [OCRData, setOCRData]=useState({
-        op:'',
-        lote:'',
-        referencia:'',
-        refColor:'',
-        modulo:'',
-        NumeroOperarios:'',
-        nombreOperario:'',
-        fecha:'',
-        desde:'',
-        hasta:'',
-        totalRegistros:0,
-        motivoParada:'',
-        estructuraRegistros:{}
+    const DNS="http://172.16.2.93:8080";
+    const [newUser,setNewUser]=useState({
+        userDocumentId:null,
+        userPassword:null,
+        userConfirmPassword:null,
+        userProfile:null
     });
+    const [loginUser,setloginUser]=useState({
+        userDocumentId:null,
+        userPassword:null
+    });
+    
+    const [currentUser,setCurrentUser]=useState({});
+    const [modalInput,setModalInput]=useState(false);
+    const [userToken,setUserToken]=useState('');
+    const [mainView,setMainView]=useState(0);
+    const [loadingSigIn,setLoadingSigIn]=useState(false);
+
+    //Puentes de información 
+    const [opInfoInterfaz,setOpInfoInterfaz]=useState({});
+    const [opSpeInfoInterfaz,setOpSpeInfoInterfaz]=useState({});
+    const [ocrInfoInterfaz,setOcrInfoInterfaz]=useState({});
+
+    const [modalOcrInfo,setModalOcrInfo]=useState(false);
+    const [modalSpecificationOP,SetModalSpecificationOP]=useState(false);
+    const [modalOcrList,setModalOcrList]=useState(false);
+
 
     const data={
-        valueL1A,setValueL1A,
-        valueL1B,setValueL1B,
-        valueL2,setValueL2,
-        createOCRState,setCreateOCRState,
-        infoOCRState,setInfoOCRState,
-        signUpModal,setSignUpModal,
-        asideState,setAsideState,
-        modalEditState,setModalEditState,
-        modalRegisterState,setModalRegisterState,
-        modalAlertClearData,setmodalAlertClearData,
-        OCRData, setOCRData,
-        modalAlertSendData,setmodalAlertSendData,
-        modalParadaInmediate,setModalParadaInmediate
+        timeAgo,
+        DNS,
+        //puentes de información
+        opInfoInterfaz,setOpInfoInterfaz,
+        opSpeInfoInterfaz,setOpSpeInfoInterfaz,
+        ocrInfoInterfaz,setOcrInfoInterfaz,
+
+        modalOcrInfo,setModalOcrInfo,
+        modalSpecificationOP,SetModalSpecificationOP,
+        modalOcrList,setModalOcrList,
+
+        newUser,setNewUser,
+        modalInput,setModalInput,
+        loginUser,setloginUser,
+        currentUser,setCurrentUser,
+        userToken,setUserToken,
+        mainView,setMainView,
+        loadingSigIn,setLoadingSigIn
     }
     return(
         <MainContext.Provider value={data}>

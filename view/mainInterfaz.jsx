@@ -1,81 +1,132 @@
-import { StyleSheet, Text, FlatList,View, Modal}   from 'react-native';
-import { TextInput, Dimensions, TouchableOpacity } from 'react-native';
-import { MenuIcon,PlusRect, SearchIcon}            from './iconosSvg.jsx';
-import { OPcomponent }                             from '../components/opComponent.jsx';
-import { OcrComponent }                            from '../components/ocrComponent.jsx';
-import { useState }                                from 'react';
-import { Aside }                                   from '../components/aside.jsx';
-import { Lista1A, Lista1B, Lista2 }                from '../components/filterListaSelect.jsx'
-import { useMainContex }                           from '../context/mainContext.jsx';
+import { OPcomponent }                                                  from '../components/opComponent.jsx';
+import { OcrComponent }                                                 from '../components/plantaVersion/ocrComponentPlanta.jsx';
+import { useMainContex }                                                from '../context/mainContext.jsx';
+import { usePlantaContext }                                             from '../context/plantaContext.jsx';
+import { QueryDataOCR, QueryDataOp, QueryDataUsers }                    from '../api/apiConsults.js';
+import { EmptyInterfaz }                                                from '../components/allVersions/emptyInterfaz.jsx';
+import { MenuIcon, PlusCirc, SearchIcon}                                from './iconosSvg.jsx';
+import { StyleSheet, Text, FlatList,View, Modal, Alert}                 from 'react-native';
+import { TextInput, Dimensions, TouchableOpacity,ActivityIndicator }    from 'react-native';
+import { useEffect, useState }                                          from 'react'; 
+import { LoadingComponent } from '../components/loadingComponent.jsx';
 
-const {width,height}=Dimensions.get('window');
+const {width,height}=Dimensions.get('screen');
 
-export function MainInterfaz(){
-    const {asideState,setAsideState}= useMainContex();
-    const { valueL2,createOCRState,setCreateOCRState }=useMainContex();
-    // const inputType=[['numeric','numeric'],['numeric','numeric'],['numeric','number-pad','numeric','default']]
+export function MainInterfaz({navigation}){
+    
+    const {DNS,currentUser,userToken}= useMainContex();
+    const {setModalCreateOcrState,setAsideState,currentOcr,setCurrentOcr,setCurrentOp,
+            setModalValidationOcr,AsyncStorageManagement,statusReques,setEventosImproductivos,
+            setModulosList} = usePlantaContext();
 
+    const [opList,setOpList]=useState([]);
+    const [ocrList,setOcrList]=useState([]);
+    const [loading,setLoading]=useState(true);
+    const [filterOP,setFilterOp]=useState([]);
+    const [inputOp,setInputOp]=useState('')
+
+    const ApiQueryUser=new QueryDataUsers(DNS,'/api/ml/user/sesion/get/',userToken);
+    
+    const AsyncStoreObj=new AsyncStorageManagement('newCurrentOcr','newCurrentOp');
+
+    useEffect(()=>{
+        loadInformationAsyncStorage();
+        loadInformation(currentUser.user_document_id);
+    },[statusReques]);
+
+    useEffect(()=>{
+        if(inputOp){
+            const filterValue=filterOP.filter(element1=>element1.op.includes(inputOp));        
+            setOpList(filterValue);
+        }
+    },[inputOp]);
+    
+
+    async function loadInformation(UserDocumentId){
+        try {
+            const response3=await ApiQueryUser.getSesion(UserDocumentId);
+            console.log(response3.data.data.opList);
+            setLoading(false);
+            setOpList(response3.data.data.opList);
+            setFilterOp(response3.data.data.opList);
+            setOcrList(response3.data.data.ocrList.slice(0,4));
+            setEventosImproductivos(response3.data.data.anomalyList);
+            setModulosList(response3.data.data.moduloList);
+
+            // setLoading(false);
+
+        } catch (error) {
+            console.log(error);
+            Alert.alert('Error de servidor','Hubo un problema a la hora de intentar cargar los datos')
+        }
+    }
+    async function loadInformationAsyncStorage(){
+        try {
+            const [response1,response2]=await AsyncStoreObj.getData();
+            console.log(response1,response2)
+            if(response1&&response2){
+                setCurrentOcr(response1);
+                setCurrentOp(response2);
+            }
+        } catch (error) {
+            console.log(error);
+            Alert.alert('Error en almacenamineto local', 'Hubo un problema en el almacenamiento local')
+        }
+    }
+    const handlerCreateOcr=()=>{
+        if(currentOcr.ean){
+            setModalValidationOcr(true);
+        }else{
+            setModalCreateOcrState(true);
+        }
+    }
     return(
         <View style={{height,width}}>
             <View style={StyleMainWindow.headerBack}></View>
-            <View style={StyleMainWindow.header}>
-                <View style={StyleMainWindow.filterContainer}>
-                    <View style={StyleMainWindow.inputContainer}>
-                        <View style={StyleMainWindow.enterFilter}>
-                            <View style={StyleMainWindow.span}>
-                                <SearchIcon/>
-                            </View>
-                            <TextInput style={StyleMainWindow.input}/>
-                        </View>
-                        <View style={StyleMainWindow.fieldSelectFilter}>
-                            <Lista2/>
-                        </View>
-                    </View>
-                    <View style={StyleMainWindow.filterFieldContainer}>
-                        {/* <Lista1B/> */}
-                        {valueL2==="opcion1"||valueL2==="opcion2"?<Lista1A/>:valueL2==="opcion3"?<Lista1B/>:<></>}
-                    </View>
-                </View>
-                <View style={StyleMainWindow.fieldContainer}>
-                    <View style={StyleMainWindow.empty1}><Text style={StyleMainWindow.textField}>LISTA</Text></View>
-                    <View style={StyleMainWindow.fieldContent}><Text style={StyleMainWindow.textField}>OP</Text></View>
-                    <View style={StyleMainWindow.fieldContent}><Text style={StyleMainWindow.textField}>META</Text></View>
-                    <View style={StyleMainWindow.fieldContent}><Text style={StyleMainWindow.textField}>COMP</Text></View>
-                    <View style={StyleMainWindow.fieldContent}><Text style={StyleMainWindow.textField}>SIN COMP</Text></View>
-                    <View style={StyleMainWindow.fieldContent}><Text style={StyleMainWindow.textField}>No. OCR</Text></View>
-                </View>
-            </View>
             <View style={StyleMainWindow.backRoots}></View>
-            <View style={StyleMainWindow.root1}>
-                <View style={StyleMainWindow.frame1}>
-                    <FlatList renderItem={item=><OPcomponent/>} data={DATA} key={element=>element.id}>
-                    </FlatList>
+
+            <View style={StyleMainWindow.Backcontainer}>
+                <View style={StyleMainWindow.header}>
+                    <View style={StyleMainWindow.filterContainer}>
+                        <View style={StyleMainWindow.inputContainer}>
+                            <View style={StyleMainWindow.enterFilter}>
+                                <View style={StyleMainWindow.span}>
+                                    <SearchIcon/>
+                                </View>
+                                <TextInput style={StyleMainWindow.input} placeholder='Filtrar OP' onChangeText={(text)=>{setInputOp(text)}} keyboardType={'numeric'}/>
+                            </View>
+                        </View>
+                    </View>
+                    <View style={StyleMainWindow.fieldContainer}>
+                        <View  style={{width:'13%',height:'100%'}}></View>
+                        <View style={{justifyContent:'center',alignItems:'center',width:'18%',height:'100%'}}><Text style={StyleMainWindow.textField}>OP</Text></View>
+                        <View style={{justifyContent:'center',alignItems:'center',width:'13%',height:'100%'}}><Text style={StyleMainWindow.textField}>PLANE...</Text></View>
+                        <View style={{justifyContent:'center',alignItems:'center',width:'15%',height:'100%'}}><Text style={StyleMainWindow.textField}>EJECUT...</Text></View>
+                        <View style={{justifyContent:'center',alignItems:'center',width:'15%',height:'100%'}}><Text style={StyleMainWindow.textField}>SIN EJEC...</Text></View>
+                        <View style={{justifyContent:'center',alignItems:'center',width:'24%',height:'100%'}}><Text style={StyleMainWindow.textField}>REFERENCIA...</Text></View>
+                    </View> 
+                </View>
+                <View style={StyleMainWindow.root1}>
+                    <View style={StyleMainWindow.frame1}>
+                        
+                        {loading?<LoadingComponent message={'Cargando lista de OP...'}/>:opList.length===0?<EmptyInterfaz data={"Una vez se empiece a generar registros prodrá visualizar la información de las OP's aquí"}/>:<FlatList renderItem={item=><OPcomponent data={item} />} data={opList}/>}
+                    </View>
+                    <TouchableOpacity style={StyleMainWindow.buttonOCR} onPress={handlerCreateOcr}>
+                        <PlusCirc/>
+                    </TouchableOpacity>
+                </View>
+                <View style={StyleMainWindow.root2}>
+                    <View style={StyleMainWindow.frame2}>
+                        {loading?<LoadingComponent message={'cargando lista de OCR...'}/>:ocrList.length===0?<EmptyInterfaz data={"Una vez se empiece a generar registros prodrá visualizar la información de las OCR's aquí"}/>:ocrList.map(element=><OcrComponent data={element} key={element.ocr_id}/>)}
+                    </View>
                 </View>
             </View>
-            <View style={StyleMainWindow.root2}>
-                <View style={StyleMainWindow.frame2}>
-                    <OcrComponent/>
-                    <OcrComponent/>
-                    <OcrComponent/>
-                    <OcrComponent/>
-                    {/* <FlatList renderItem={item=><OcrComponent/>} horizontal={true} data={DATA} key={element=>element.id}>
-                    </FlatList> */}
-                </View>
-            </View>
-            <TouchableOpacity style={StyleMainWindow.buttonOCR}  onPress={()=>{setCreateOCRState(!createOCRState)}}>
-                <PlusRect/>
-            </TouchableOpacity>
             <View style={StyleMainWindow.buttonMenu}>
-                <TouchableOpacity onPress={()=>setAsideState(true)}>
+                <TouchableOpacity onPress={()=>{setAsideState(true)}}>
                     <MenuIcon data={currentColorMain}/>
                 </TouchableOpacity>
             </View>
-            <Modal
-              animationType="fade"
-              transparent={true}
-              visible={asideState}>
-                <Aside/>
-            </Modal>
+            
         </View>
     )
 }
@@ -87,41 +138,47 @@ const currentColorMain2='#e8e8e8';  //gris muy claro
 const StyleMainWindow=StyleSheet.create({
     headerBack:{
         width:'100%',
-        height:'15%',
+        height:'10%',
         backgroundColor:currentColorMain
     },
-    header:{
-        position:'absolute',
-        zIndex:10,
-        height:'15%',
-        width:'95%',
-        backgroundColor:'#FFF',
-        marginTop:'10%',
-        borderRadius:height*0.01,
-        alignSelf:'center'
-    },
     backRoots:{
-        height:'85%',
+        height:'90%',
         width:'100%',
         backgroundColor:currentColorMain2
     },
-    root1:{
+    Backcontainer:{
         position:'absolute',
-        zIndex:10,
+        width,
+        height,
+        // justifyContent:'space-evenly'
+    },
+    header:{
+        // position:'absolute',
+        // zIndex:10,
+        height:'13%',
+        width:'95%',
+        backgroundColor:'#FFF',
+        marginTop:'5%',
+        borderRadius:height*0.01,
+        alignSelf:'center'
+    },
+    root1:{
+        // position:'absolute',
+        // zIndex:10,
         height:'56%',
         width:'95%',
-        marginTop:'37%',
+        marginTop:'3%',
         backgroundColor:'#FFF',
         borderRadius:height*0.01,
         alignSelf:'center',
         justifyContent:'center'
     },
     root2:{
-        position:'absolute',
-        zIndex:10,
-        height:'17%',
+        // position:'absolute',
+        // zIndex:10,
+        height:'16%',
         width:'95%',
-        marginTop:height*0.82,
+        marginTop:'3%',
         backgroundColor:'#FFF',
         borderRadius:height*0.01,
         alignSelf:'center',
@@ -129,13 +186,14 @@ const StyleMainWindow=StyleSheet.create({
     },
     buttonOCR:{
         position:'absolute',
-        top:height*0.9,
-        left:width*0.83,
         zIndex:20,
-        height:height*0.08,
-        width:height*0.08,
+        height:height*0.05,
+        width:height*0.05,
+        right:0,
+        bottom:0,
+        marginRight:'5%',
+        marginBottom:'5%',
         borderRadius:height*0.04,
-        // backgroundColor:currentColorMain1,
         backgroundColor:'#FFF',
         elevation:height*0.006,
         justifyContent:'center',
@@ -157,20 +215,21 @@ const StyleMainWindow=StyleSheet.create({
         width:'95%',
         paddingLeft:'1%',
         borderRadius:height*0.01,
-        // justifyContent:'center',
+        justifyContent:'flex-start',
         alignSelf:'center',
-        alignItems:'center',
-        // flex:1
+        alignItems:'center'
     },
     filterContainer:{
         width:'100%',
-        height:'70%',
-        flexDirection:'row',
+        height:'60%',
+        // flexDirection:'row',
+        justifyContent:'center',
+        alignItems:'center',
         // backgroundColor:'aqua'
     },
     fieldContainer:{
         width:'100%',
-        height:'30%',
+        height:'40%',
         // backgroundColor:'aqua',
         flexDirection:'row',
         borderTopWidth:height*0.002,
@@ -184,36 +243,39 @@ const StyleMainWindow=StyleSheet.create({
     },
     fieldContent:{
         height:'100%',
-        width:'15%',
+        width:'17%',
         justifyContent:'center',
         alignItems:'center'
     },
     textField:{
-        color:'#515151',
-        fontWeight:'bold'
+        color:'#717171',
+        fontWeight:'bold',
+        fontSize:height*0.013
     },
     inputContainer:{
         height:'100%',
         width:'70%',
     },
     enterFilter:{
-        height:'60%',
+        height:'100%',
         width:'100%',
         // backgroundColor:'aqua',
         justifyContent:'center',
         alignItems:'flex-end'
     },
     input:{
-        height:'70%',
-        width:'85%',
+        height:'50%',
+        width:'100%',
         borderWidth:height*0.0015,
         borderColor:currentColorMain1,
         borderRadius:height*0.05,
-        paddingLeft:'15%'
+        paddingLeft:'15%',
+        fontSize:height*0.02,
+        textAlign:'center'
     },
     span:{
         position:'absolute',
-        left:'15%',
+        left:'3%',
         borderColor:currentColorMain1,
         borderRadius:height*0.005,
         width:'10%',
@@ -328,15 +390,3 @@ const StyleMainWindow=StyleSheet.create({
     }
 });
 
-const DATA = [
-    { id: '01', title: 'Elemento 01' },
-    { id: '02', title: 'Elemento 02' },
-    { id: '03', title: 'Elemento 03' },
-    { id: '04', title: 'Elemento 04' },
-    { id: '05', title: 'Elemento 05' },
-    { id: '06', title: 'Elemento 06' },
-    { id: '07', title: 'Elemento 07' },
-    { id: '08', title: 'Elemento 08' },
-    { id: '09', title: 'Elemento 09' },
-    { id: '10', title: 'Elemento 10' },
-  ];

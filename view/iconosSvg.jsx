@@ -1,18 +1,11 @@
-import * as React from "react"
-import Svg, { Path, Circle,Rect, Ellipse } from "react-native-svg"
-import { Dimensions } from 'react-native';
+// import * as React from  "react"
+import Svg, { Path, Circle, Rect,Ellipse }  from "react-native-svg"
+import { Dimensions }               from 'react-native';
 
-
-const { width, height } = Dimensions.get('window');
-// console.log(rex)
+const { height } = Dimensions.get('window');
 
 const currentColorMain='#44329C';
-const currentColorMain1='#C7CCEC';
-const currentColorMain2='#e8e8e8'
-const currentColorMain3='#717171'
 const currentColorMain4='#44329ca5';//Azul claro intermedio
-
-
 
 export function UserIcon() {
   return (
@@ -56,48 +49,6 @@ export function CalendarIcon() {
     )
 }
 
-export  function DatabaseIcon({data}) {
-    return (
-      <Svg
-        xmlns="http://www.w3.org/2000/svg"
-        width={height*0.035}
-        height={height*0.035}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke={data}
-        strokeWidth={2}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="feather feather-database"
-      >
-        <Ellipse cx={12} cy={5} rx={9} ry={3} />
-        <Path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
-        <Path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
-      </Svg>
-    )
-}
-
-export  function ModuloIcon() {
-    return (
-      <Svg
-        xmlns="http://www.w3.org/2000/svg"
-        width={height*0.035}
-        height={height*0.035}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke={currentColorMain}
-        strokeWidth={2}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="feather feather-monitor"
-      >
-        <Rect x={2} y={3} width={20} height={14} rx={2} ry={2} />
-        <Path d="M8 21L16 21" />
-        <Path d="M12 17L12 21" />
-      </Svg>
-    )
-}
-
 export function BarIcon(props) {
   return (
     <Svg
@@ -119,7 +70,7 @@ export function BarIcon(props) {
   )
 }
 
-export function PlusRect(props) {
+export function PlusSeg(props) {
   return (
     <Svg
       xmlns="http://www.w3.org/2000/svg"
@@ -127,19 +78,60 @@ export function PlusRect(props) {
       height={70}
       viewBox="0 0 24 24"
       fill="none"
-      stroke={currentColorMain}
+      stroke={"#FFF"}
       strokeWidth={1}
       strokeLinecap="round"
       strokeLinejoin="round"
       className="feather feather-plus-square"
     >
-      {/* <Rect x={3} y={3} width={18} height={18} rx={2} ry={2} /> */}
+      {/* <Circle cx={12} cy={12} r={10} /> */}
       <Path d="M12 8L12 16" />
       <Path d="M8 12L16 12" />
     </Svg>
   )
 }
-
+export function PlusOcr(props) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={36}
+      height={36}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={"#FFF"}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="feather feather-plus-square"
+    >
+      <Circle cx={12} cy={12} r={10} />
+      <Path d="M12 8L12 16" />
+      <Path d="M8 12L16 12" />
+    </Svg>
+  )
+}
+export function UserPlus(props) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={36}
+      height={36}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#FFF"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="feather feather-user-plus"
+      {...props}
+    >
+      <Path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+      <Circle cx={8.5} cy={7} r={4} />
+      <Path d="M20 8L20 14" />
+      <Path d="M23 11L17 11" />
+    </Svg>
+  )
+}
 export function OcrIcon(props) {
   return (
     <Svg
@@ -148,7 +140,7 @@ export function OcrIcon(props) {
       height={30}
       viewBox="0 0 24 24"
       fill="none"
-      stroke={currentColorMain}
+      stroke={"#fff"}
       strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -178,44 +170,6 @@ export function SearchIcon(props) {
     >
       <Circle cx={11} cy={11} r={8} />
       <Path d="M21 21L16.65 16.65" />
-    </Svg>
-  )
-}
-export function RowDown(props) {
-  return (
-    <Svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={30}
-      height={30}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={currentColorMain}
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="feather feather-chevron-down"
-    >
-      <Path d="M6 9L12 15 18 9" />
-    </Svg>
-  )
-}
-
-export function RowUpp(props) {
-  return (
-    <Svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={30}
-      height={30}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={currentColorMain}
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="feather feather-chevron-up"
-
-    >
-      <Path d="M18 15L12 9 6 15" />
     </Svg>
   )
 }
@@ -308,17 +262,17 @@ export function PlusCirc(props) {
   return (
     <Svg
       xmlns="http://www.w3.org/2000/svg"
-      width={36}
-      height={36}
+      width={56}
+      height={56}
       viewBox="0 0 24 24"
       fill="none"
-      stroke="#FFF"
-      strokeWidth={2}
+      stroke={currentColorMain4}
+      strokeWidth={1.2}
       strokeLinecap="round"
       strokeLinejoin="round"
       className="feather feather-plus-circle"
     >
-      <Circle cx={12} cy={12} r={10} />
+      
       <Path d="M12 8L12 16" />
       <Path d="M8 12L16 12" />
     </Svg>
@@ -363,6 +317,7 @@ export function CheckIcon(props) {
     </Svg>
   )
 }
+
 export function CloseIcon(props) {
   return (
     <Svg
@@ -382,6 +337,7 @@ export function CloseIcon(props) {
     </Svg>
   )
 }
+
 export function CedulaIcon(props) {
   return (
     <Svg
@@ -401,6 +357,7 @@ export function CedulaIcon(props) {
     </Svg>
   )
 }
+
 export function UsersIcon(props) {
   return (
     <Svg
@@ -419,6 +376,270 @@ export function UsersIcon(props) {
       <Path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
       <Circle cx={9} cy={7} r={4} />
       <Path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+    </Svg>
+  )
+}
+
+export function RoowLeft(props) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={56}
+      height={56}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={props.data}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="feather feather-arrow-left"
+    >
+      <Path d="M19 12L5 12" />
+      <Path d="M12 19L5 12 12 5" />
+    </Svg>
+  )
+}
+
+export function OCRIcon(props) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={props.data.size}
+      height={props.data.size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={props.data.color}
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="feather feather-box"
+    >
+      <Path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+      <Path d="M3.27 6.96L12 12.01 20.73 6.96" />
+      <Path d="M12 22.08L12 12" />
+    </Svg>
+  )
+}
+
+export function RefreshIcon({data}) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={data.size}
+      height={data.size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={currentColorMain}
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="feather feather-refresh-ccw"
+    >
+      <Path d="M1 4L1 10 7 10" />
+      <Path d="M23 20L23 14 17 14" />
+      <Path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15" />
+    </Svg>
+  )
+}
+
+export function FilterIcon({data}) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={data.size}
+      height={data.size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={data.color}
+      strokeWidth={1.7}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="feather feather-filter"
+    >
+      <Path d="M22 3L2 3 10 12.46 10 19 14 21 14 12.46 22 3z" />
+    </Svg>
+  )
+}
+
+export function CheckBoxEmpty({data}) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={data.size}
+      height={data.size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={data.color}
+      strokeWidth={3}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="feather feather-square"
+    >
+      <Rect x={3} y={3} width={18} height={18} rx={2} ry={2} />
+    </Svg>
+  )
+}
+
+export function CheckBoxFill({data}) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={data.size}
+      height={data.size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={data.color}
+      strokeWidth={3.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="feather feather-check-square"
+    >
+      <Path d="M9 11L12 14 22 4" />
+      <Path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+    </Svg>
+  )
+}
+
+export  function ModuloIcon({size,color}) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={height*0.035}
+      height={height*0.035}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={currentColorMain}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="feather feather-monitor"
+    >
+      <Rect x={2} y={3} width={20} height={14} rx={2} ry={2} />
+      <Path d="M8 21L16 21" />
+      <Path d="M12 17L12 21" />
+    </Svg>
+  )
+}
+export  function ModuloIconList() {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={height*0.045}
+      height={height*0.045}
+      viewBox="0 0 24 24"
+      fill={'none'}
+      stroke={'#888'}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="feather feather-monitor"
+    >
+      <Rect x={2} y={3} width={20} height={14} rx={2} ry={2} />
+      <Path d="M8 21L16 21" />
+      <Path d="M12 17L12 21" />
+    </Svg>
+  )
+}
+export  function ModuloIconList2({color,size}) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="feather feather-monitor"
+    >
+      <Rect x={2} y={3} width={20} height={14} rx={2} ry={2} />
+      <Path d="M8 21L16 21" />
+      <Path d="M12 17L12 21" />
+    </Svg>
+  )
+}
+export  function ModuloIconList3({color,size}) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="#DDD"
+      stroke={color}
+      strokeWidth={1.6}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="feather feather-monitor"
+    >
+      <Rect x={2} y={3} width={20} height={14} rx={2} ry={2} />
+      <Path d="M8 21L16 21" />
+      <Path d="M12 17L12 21" />
+    </Svg>
+  )
+}
+
+export function ReviseIcon({color,size}) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="feather feather-edit"
+    >
+      <Path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+      <Path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </Svg>
+  )
+}
+
+export  function DatabaseIcon({data}) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={height*0.035}
+      height={height*0.035}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={data}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="feather feather-database"
+    >
+      <Ellipse cx={12} cy={5} rx={9} ry={3} />
+      <Path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+      <Path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+    </Svg>
+  )
+}
+
+
+export function LayersIcon({size,color}) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="feather feather-layers"
+    >
+      <Path d="M12 2L2 7 12 12 22 7 12 2z" />
+      <Path d="M2 17L12 22 22 17" />
+      <Path d="M2 12L12 17 22 12" />
     </Svg>
   )
 }

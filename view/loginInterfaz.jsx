@@ -1,20 +1,68 @@
-import { StyleSheet, Text, View, TextInput, Keyboard }  from 'react-native';
-import { Image,Dimensions,TouchableOpacity, Modal }     from 'react-native';
-import { Lock, User2}                                   from './iconosSvg.jsx'
-import { useState }                                     from 'react';
-import { ModalInput }                                   from '../components/modalInput.jsx';
-import { useMainContex }                                from '../context/mainContext.jsx';
-
+import { StyleSheet, Text, View}                                from 'react-native';
+import { Image,Dimensions,TouchableOpacity, Modal, Alert}       from 'react-native';
+import { useEffect, useState }                                  from 'react';
+import { ModalInput }                                           from '../components/modalInput.jsx';
+import { useMainContex }                                        from '../context/mainContext.jsx';
+import {QueryDataUsers}                                         from '../api/apiConsults.js';
+import { FormComponent }                                        from '../components/formComponent.jsx';
+import AsyncStorage                                             from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
 
-export function Login({navigation}){
-    const { signUpModal,setSignUpModal}=useMainContex();
-    const [titleState,setTitleState]=useState('');
-    function handlerModalInput(title){
-        setSignUpModal(true);
-        setTitleState(title);
+export function Login(){
+    const { DNS,modalInput, loginUser, setCurrentUser,setUserToken,setMainView}=useMainContex();
+            
+    const [modalLabel,setModalLabel]=useState('');
+    const [loading, setLoading]=useState(false);
+    
+    const handlerAccessSesion=(response)=>{
+        setCurrentUser(response.data.data[0]);
+        setUserToken(response.token);
+        setMainView(response.data.data[0].profile_id);
+        setLoading(false);
     }
+    async function getDataUser(data){
+        const ApiQueryUsers=new QueryDataUsers(DNS,'/api/ml/auth/login/',data.userTokenId);
+        try {
+            const response1=await ApiQueryUsers.getData(data);
+            // console.log(response1.data)
+            if(response1.data.statusCodeApi===1){
+                    Alert.alert('¿DESEA GUARDAR LOS DATOS?','Esto le permite tener la sesión iniciada',
+                    [
+                    {text: 'OK', onPress:()=>{
+                        // loadAsyncStoreInformation({token:response1.data.token});
+                        handlerAccessSesion(response1);
+                        setLoading(true);
+                        }, style: 'cancel'},
+
+                    {text: 'CANCEL', onPress: () =>{
+                        handlerAccessSesion(response1);
+                        setLoading(true);
+                    }, style: 'cancel'},
+                ]);
+            }
+            if(response1.data.statusResponse===0) Alert.alert('Datos erroneos',response1.data.message)
+        } catch (error) {
+            console.log(error);
+            Alert.alert('Error de servidor','Error al tratar de ingresar')
+        }
+    }
+    async function loadAsyncStoreInformation(data){
+        await AsyncStorage.setItem('user-token-id',data.token);
+    }
+    const handlerSubmitInformation=()=>{
+        
+        if(loginUser.userDocumentId&&loginUser.userPassword){
+            getDataUser({
+                ...loginUser,
+                userTokenId:'none'
+            });
+        }
+        else{
+            Alert.alert('Datos Erroneos','Asegúsere de llenar todos los campos');
+        }
+    }
+
     return(
         <View style={{height,width}}>
             <View style={signOutStyle.backGroundApp}>
@@ -34,56 +82,31 @@ export function Login({navigation}){
                             <Text style={{fontSize:height*0.03,color:'#bbb',fontWeight:'bold'}}>Ingresa a nuestra app</Text>
                         </View>
                     </View>
-                    <View style={signOutStyle.fieldsContainer}>
-                        <View style={signOutStyle.inputContainer}>
-                            <View  style={signOutStyle.lock}>
-                                <User2/>
-                            </View>
-                            <Text style={signOutStyle.label}>Cedula</Text>
-                            <TouchableOpacity onPress={()=>{handlerModalInput('NUMERO DE CEDULA')}}>
-                                <View style={signOutStyle.input}
-                                autoFocus={false} />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={signOutStyle.inputContainer}>
-                            <View  style={signOutStyle.lock}>
-                                <Lock/>
-                            </View>
-                            <Text style={signOutStyle.label}>Password</Text>
-                            <TouchableOpacity onPress={()=>{handlerModalInput('CONTRASEÑA')}}>
-                                <View style={signOutStyle.input}
-                                autoFocus={false} />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+                    <FormComponent setModalLabel={setModalLabel} loading={loading}/>
                     <View style={signOutStyle.actionContainer}>
                         <View style={signOutStyle.buttonContainer}>
-                            <TouchableOpacity style={signOutStyle.loginButton} onPress={() => navigation.navigate('MainRoot')}>
+                            <TouchableOpacity style={signOutStyle.loginButton} onPress={handlerSubmitInformation}>
                                 <Text style={signOutStyle.ingresar}>INGRESAR</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={signOutStyle.buttonContainer}>
-                            <TouchableOpacity style={signOutStyle.signupButton} onPress={() => navigation.navigate('SignUp')}>
-                                <Text style={signOutStyle.registrarse}>REGISTRARSE</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
                 </View>
             </View>
-            <Modal
-            animationType="fade"
-            transparent={true}
-            visible={signUpModal}>
-                <ModalInput title={{title:titleState}}/>
-            </Modal>
-
+            <>
+                <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalInput}>
+                    <ModalInput title={modalLabel} interfaz={1}/>
+                </Modal>
+            
+            </>
         </View>
     )
 }
-const currentColorDefault='#44329C'
+const currentColorDefault='#44329C';
 const currentColorMain='#44329C';
-const currentColorMain2='#e8e8e8'
-const currentColorMain3='#717171'
+const currentColorMain3='#717171';
 
 const signOutStyle=StyleSheet.create({
     backGroundApp:{
@@ -144,42 +167,7 @@ const signOutStyle=StyleSheet.create({
         height:'60%',
         justifyContent:'flex-end'
     },
-    ingresar:{
-        width:'70%',
-        height:'30%',
-        justifyContent:'center'
-    },
-    fieldsContainer:{
-        width:'100%',
-        height:'40%',
-        justifyContent:'center'
-    },
-    inputContainer:{
-        height:'40%',
-        width:'100%',
-        // backgroundColor:'aqua',
-        // alignItems:'center',
-        justifyContent:'center'
-    },
-    input:{
-        backgroundColor:'#FFF',
-        alignSelf:'center',
-        width:'80%',
-        height:'70%',
-        // backgroundColor:'aqua',
-        borderBottomWidth:height*0.002,
-        borderColor:currentColorMain2,
-        borderRadius:height*0.01,
-        fontSize:height*0.03,
-        paddingLeft:'3%',
-        color:currentColorMain3
-    },
-    label:{
-        marginLeft:'10%',
-        color:'#ccc',
-        fontWeight:'bold',
-        fontSize:height*0.02
-    },
+   
     actionContainer:{
         // backgroundColor:'aqua',
         width:'100%',
@@ -201,32 +189,11 @@ const signOutStyle=StyleSheet.create({
         justifyContent:'center',
         alignItems:'center'
     },
-    signupButton:{
-        backgroundColor:'#FFF',
-        width:'100%',
-        height:'80%',
-        borderColor:currentColorMain,
-        borderWidth:height*0.003,
-        justifyContent:'center',
-        alignItems:'center',
-        borderRadius:height*0.005,
-    },
+   
     ingresar:{
         color:'#FFF',
         fontWeight:'bold',
         fontSize:height*0.02
-    },
-    registrarse:{
-        color:currentColorMain,
-        fontWeight:'bold',
-        fontSize:height*0.02
-    },
-    lock:{
-        position:'absolute',
-        zIndex:10,
-        left:'85%',
-        bottom:'30%',
-        opacity:0.7
     }
 
 });

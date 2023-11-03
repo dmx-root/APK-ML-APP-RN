@@ -1,20 +1,71 @@
-import { StyleSheet, Text, View, TextInput,Modal}       from 'react-native';
-import { Image,Dimensions,TouchableOpacity, Keyboard }  from 'react-native';
-import { Lock, User2,CedulaIcon, UsersIcon }                       from './iconosSvg.jsx';
+import { StyleSheet, Text, View,Modal}                  from 'react-native';
+import { Image,Dimensions,TouchableOpacity,Alert}       from 'react-native';
+import { Lock, User2,CedulaIcon, UsersIcon }            from './iconosSvg.jsx';
 import { useMainContex }                                from '../context/mainContext.jsx';
 import { ModalInput }                                   from '../components/modalInput.jsx';
-import { useState }                                     from 'react';
-import { CargoList } from '../components/filterListaSelect.jsx';
+import { useEffect, useState }                          from 'react';
+import { CargoList }                                    from '../components/filterListaSelect.jsx';
+import {QueryDataUsers}                                 from '../api/apiConsults.js'
+import { ModalInputDate } from '../components/modalInputDate.jsx';
 
 const { width, height } = Dimensions.get('window');
+const ObjectQuery=new QueryDataUsers('http://172.16.2.93:8000/api/users');
 
-export function SignUp(){
-    const {signUpModal,setSignUpModal}=useMainContex()
+export function SignUp({navigation}){
+    const {signUpModal,setSignUpModal,newUser,setNewUser,currentUser,setCurrentUser,modalStateDate,setModalStateDate}=useMainContex();
     const [titleState,setTitleState]=useState('');
+    const [errorHandler,setHandlerError]=useState({message:'',code:1004})//1004 campos vacios 
     function handlerModalInput(title){
         setSignUpModal(true);
         setTitleState(title);
     }
+    const loadInformation=async (data)=>{
+        try {
+            const response=await ObjectQuery.submitData(data);
+            console.log(response.data)
+            if(response.data.code===1001){
+                currentUser.userName=response.data.newUser.userName;
+                currentUser.userCedula=response.data.newUser.userCedula;
+                currentUser.userCargo=response.data.newUser.userCargo;
+                currentUser.userTokenPassState=true;
+                currentUser.userTokenId=response.data.newUser.userTokenId;
+                setCurrentUser(currentUser);
+                navigation.navigate('MainRoot');
+            }
+            else if(response.data.code===1000){
+                Alert.alert('Error de autenticación','El usuario ya existe');
+            }
+            
+        } catch (error) {
+            const err=new Error('Algo falló al intentar enviar los datos');
+            Alert.alert(
+                'Error de servidor',
+                'Algo falló al intentar enviar los datos');
+            console.log(err)
+            console.log(error)
+        }
+    }
+    const handlerSubmitInformation=()=>{
+        
+        if(newUser.userName&&newUser.userCedula&&newUser.userFechaExp&&newUser.userPassword){ 
+            if(newUser.userPassword===newUser.userPasswordConfirmed){
+                loadInformation(newUser);
+                // console.log(newUser)
+                setNewUser({userName:'',userCargo:'',userFechaExp:'',userPassword:'',userPasswordConfirmed:''});
+            }else{
+                setHandlerError({message:'Las contraseñas no coinciden',code:1005}) 
+                Alert.alert(
+                    'Las contraseñas no coinciden',
+                    'Asegurese de que las contraseñas coicidan',);
+            }   
+        }else{
+            setHandlerError({message:'Complete todos los campos',code:1004})
+            Alert.alert(
+                'Campos vacios',
+                'Asegurese de haber completado todos los campos',);
+        }
+    }
+
     return(
         <View style={{height,width}}>
             <View style={signOutStyle.backGroundApp}>
@@ -26,21 +77,14 @@ export function SignUp(){
                         <Image source={require('../media_public/img/tranparentLogo.png')} style={signOutStyle.img}/>
                     </View>
                 <View style={signOutStyle.formContainer}>
-                    <View style={signOutStyle.span}>
-                        <View style={signOutStyle.hola}>
-                            <Text style={{fontSize:height*0.1,color:currentColorMain3,fontWeight:'bold'}}>Hola</Text>
-                        </View>
-                        <View style={signOutStyle.ingresar}>
-                            <Text style={{fontSize:height*0.03,color:'#bbb',fontWeight:'bold'}}>Ingresa a nuestra app</Text>
-                        </View>
-                    </View>
                     <View style={signOutStyle.fieldsContainer}>
                         <View style={signOutStyle.inputContainer}>
                             <View  style={signOutStyle.lock}>
                                 <User2/>
                             </View>
-                            <Text style={signOutStyle.label}>User Name</Text>
-                            <TouchableOpacity style={signOutStyle.input} onPress={()=>handlerModalInput('NOMBRE DE USUARIO')}>
+                            <Text style={signOutStyle.label}>Nombre de ususario</Text>
+                            <TouchableOpacity style={signOutStyle.input} onPress={()=>handlerModalInput('userName')}>
+                                <Text style={signOutStyle.fielTextInput}>{newUser.userName}</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={signOutStyle.inputContainer}>
@@ -48,55 +92,54 @@ export function SignUp(){
                                 <CedulaIcon/>
                             </View>
                             <Text style={signOutStyle.label}>Cédula</Text>
-                            <TouchableOpacity style={signOutStyle.input} onPress={()=>handlerModalInput('CEDULA')}>
+                            <TouchableOpacity style={signOutStyle.input} onPress={()=>handlerModalInput('userCedula')}>
+                                <Text style={signOutStyle.fielTextInput}>{newUser.userCedula}</Text>
                             </TouchableOpacity>
-                            {/* <TextInput style={signOutStyle.input}
-                              keyboardType='numeric'
-                              onFocus={()=>handlerModalInput('CEDULA')}
-                              autoFocus={false} /> */}
+                        </View>
+                        <View style={signOutStyle.inputContainer}>
+                            <View  style={signOutStyle.lock}>
+                                <CedulaIcon/>
+                            </View>
+                            <Text style={signOutStyle.label}>Fecha de exp-documento</Text>
+                            <TouchableOpacity style={signOutStyle.input} onPress={()=>setModalStateDate(true)}>
+                                <Text style={signOutStyle.fielTextInput}>{newUser.userFechaExp}</Text>
+                            </TouchableOpacity>
                         </View>
                         <View style={signOutStyle.inputContainer}>
                             <View  style={signOutStyle.lock}>
                                 <UsersIcon/>
                             </View>
                             <Text style={signOutStyle.label}>Cargo</Text>
-                            {/* <TextInput style={signOutStyle.input}
-                            onFocus={()=>handlerModalInput('CARGO')}
-                            autoFocus={false}/> */}
-                            <CargoList/>
+                            <TouchableOpacity style={signOutStyle.input} onPress={()=>handlerModalInput('userCargo')}>
+                                <Text style={signOutStyle.fielTextInput}>{newUser.userCargo}</Text>
+                            </TouchableOpacity>
                         </View>
                         <View style={signOutStyle.inputContainer}>
                             <View  style={signOutStyle.lock}>
                                 <Lock/>
                             </View>
                             <Text style={signOutStyle.label}>Clave</Text>
-                            <TouchableOpacity style={signOutStyle.input} onPress={()=>handlerModalInput('CONTRASEÑA')}>
+                            <TouchableOpacity style={signOutStyle.input} onPress={()=>handlerModalInput('userPassword')}>
+                                <Text style={signOutStyle.fielTextInput}>{newUser.userPassword?'* * * * * * * * * * * *':''}</Text>
                             </TouchableOpacity>
-                            {/* <TextInput style={signOutStyle.input}
-                            onFocus={()=>handlerModalInput('CLAVE')}
-                            autoFocus={false}
-                            secureTextEntry={true}/> */}
                         </View>
                         <View style={signOutStyle.inputContainer}>
                             <View  style={signOutStyle.lock}>
                                 <Lock/>
                             </View>
                             <Text style={signOutStyle.label}>Confirmar clave</Text>
-                            <TouchableOpacity style={signOutStyle.input} onPress={()=>handlerModalInput('CONFIRMAR CONTRASEÑA')}>
+                            <TouchableOpacity style={signOutStyle.input} onPress={()=>handlerModalInput('userPasswordConfirmed')}>
+                                <Text style={signOutStyle.fielTextInput}>{newUser.userPasswordConfirmed?'* * * * * * * * * * * *':''}</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
                     <View style={signOutStyle.actionContainer}>
                         <View style={signOutStyle.buttonContainer}>
-                            <TouchableOpacity style={signOutStyle.loginButton}>
+                            <TouchableOpacity style={signOutStyle.loginButton} onPress={handlerSubmitInformation}>
                                 <Text style={signOutStyle.ingresar}>REGISTRARSE</Text>
                             </TouchableOpacity>
                         </View>
-                        {/* <View style={signOutStyle.buttonContainer}>
-                            <TouchableOpacity style={signOutStyle.signupButton}>
-                                <Text style={signOutStyle.registrarse}>REGISTRARSE</Text>
-                            </TouchableOpacity>
-                        </View> */}
+
                     </View>
                 </View>
             </View>
@@ -104,7 +147,13 @@ export function SignUp(){
             animationType="fade"
             transparent={true}
             visible={signUpModal}>
-                <ModalInput title={{title:titleState}}/>
+                <ModalInput title={{title:titleState,interfaz:2}}/>
+            </Modal>
+            <Modal
+            animationType="fade"
+            transparent={true}
+            visible={modalStateDate}>
+                <ModalInputDate/>
             </Modal>
         </View>
     )
@@ -180,7 +229,8 @@ const signOutStyle=StyleSheet.create({
     },
     fieldsContainer:{
         width:'100%',
-        height:'60%',
+        height:'70%',
+        marginTop:'10%',
         justifyContent:'center'
     },
     inputContainer:{
@@ -195,6 +245,7 @@ const signOutStyle=StyleSheet.create({
         alignSelf:'center',
         width:'80%',
         height:'50%',
+        justifyContent:'center',
         borderBottomWidth:height*0.002,
         borderColor:currentColorMain2,
         borderRadius:height*0.01,
@@ -212,7 +263,7 @@ const signOutStyle=StyleSheet.create({
         // backgroundColor:'aqua',
         width:'100%',
         height:'10%',
-        marginTop:'0%'
+        marginTop:'10%'
     },
     buttonContainer:{
         height:'100%',
@@ -255,6 +306,12 @@ const signOutStyle=StyleSheet.create({
         left:'85%',
         bottom:'30%',
         opacity:0.7
+    },
+    fielTextInput:{
+        fontSize:height*0.025,
+        color:currentColorMain3,
+        alignSelf:'center',
+        
     }
 
 });

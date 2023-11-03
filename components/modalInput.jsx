@@ -1,45 +1,68 @@
-import {View, Dimensions, Text, TextInput, StyleSheet, TouchableOpacity} from 'react-native'
-import { useMainContex }                               from '../context/mainContext';
-import { CheckIcon, CloseIcon } from '../view/iconosSvg';
-import { useEffect, useState } from 'react';
+import {View, Dimensions, Text, TextInput, StyleSheet, TouchableOpacity}    from 'react-native'
+import { useMainContex }                                                    from '../context/mainContext';
+import { CheckIcon, CloseIcon }                                             from '../view/iconosSvg';
+import { useEffect, useState }                                              from 'react';
 
 const {height,width}= Dimensions.get('window')
 
-export function ModalInput({title}){
-    const { signUpModal,setSignUpModal}=useMainContex();
-    const [keyboardType,setKeyBoardType]=useState('');
+export function ModalInput({title,interfaz}){
+
+    const {loginUser,setloginUser,setModalInput}=useMainContex();
+
+    const [keyboardType,setKeyBoardType]=useState('default');
+    const [textInput,setTextInput]=useState('');
     const [segurityType,setSegurityType]=useState(false);
+
+    const modalLabel={
+        userDocumentId:'CEDULA',
+        userCargo:'PERFIL',
+        userPassword:'CONTRASEÑA'
+    }
+
     useEffect(()=>{
-        if(title.title==='CONTRASEÑA'||title.title==='CONFIRMAR CONTRASEÑA'){
+        if(title==='userPassword'||title==='userConfirmPassword'){
             setSegurityType(true);
         }
-        else if(title.title==='CEDULA'||title.title==='NUMERO DE CEDULA'){
+        else if(title==='userDocumentId'){
             setKeyBoardType('numeric');
         }
         else{
             setSegurityType(false);
-            setKeyBoardType('');      
+            setKeyBoardType('default');      
         }
     },[]);
 
+    useEffect(()=>{
+        if(interfaz===1){
+            loginUser[title]=textInput
+            setloginUser(loginUser);
+            // console.log(loginUser)
+        }
+        else if(interfaz===2){
+
+        }
+    },[textInput]);
     return(
         <View style={StyleModalInput.root}>
             <View style={StyleModalInput.boxMesage}>
                 <View style={StyleModalInput.titleBox}>
-                    <Text style={StyleModalInput.tittle}>{title.title}</Text>
+                    <Text style={StyleModalInput.tittle}>{modalLabel[title]}</Text>
                 </View>
                 <View style={StyleModalInput.inputBox}>
                     <TextInput style={StyleModalInput.input}
                      onBlur={()=>setSignUpModal(false)}
                      secureTextEntry={segurityType}
                      keyboardType={keyboardType}
+                     autoFocus={true}
+                     value={textInput}
+                     onChangeText={(e)=>{setTextInput(e)}}
                      />
                 </View>
                 <View style={StyleModalInput.actionContainer}>
-                    <TouchableOpacity style={[StyleModalInput.buttons]} onPress={()=>setSignUpModal(false)}>
+                    <TouchableOpacity style={[StyleModalInput.buttons]} onPress={()=>setModalInput(false)}>
                         <CloseIcon/>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[StyleModalInput.buttons]}>
+                    <TouchableOpacity style={[StyleModalInput.buttons]} onPress={()=>setModalInput(false)}>
                         <CheckIcon/>
                     </TouchableOpacity>
                 </View>
@@ -47,11 +70,8 @@ export function ModalInput({title}){
         </View>
     )
 }
-const currentColorMain='#44329C';   //azul oscuro
+
 const currentColorMain1='#C7CCEC';  //Azul claro
-const currentColorMain2='#e8e8e8';  //gris muy claro
-const currentColorMain3='#44329ca5';//Azul claro intermedio
-const currentColorMain4='#717171';  //color de letra resaltado
 
 const StyleModalInput=StyleSheet.create({
     root:{
@@ -87,6 +107,7 @@ const StyleModalInput=StyleSheet.create({
         borderColor:'#e1e1e1',
         borderRadius:height*0.005,
         width:'80%',
+        alignSelf:'center',
         fontSize:height*0.025,
         color:'#919191',
         paddingLeft:'5%'
