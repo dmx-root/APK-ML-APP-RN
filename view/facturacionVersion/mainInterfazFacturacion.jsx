@@ -1,6 +1,6 @@
 import { OPcomponent }                                                  from '../../components/opComponent.jsx'
 import { OcrComponent }                                                 from '../../components/plantaVersion/ocrComponentPlanta.jsx'
-import { OcrComponentButton }                                           from '../../components/invitadoVersion/ocrComponentButton.jsx'
+import { OcrComponentButtonFacturacion }                                           from '../../components/invitadoVersion/ocrComponentButton.jsx'
 import { useMainContex }                                                from '../../context/mainContext.jsx';
 import { useFacturacionContext }                                        from '../../context/facturacionContext.jsx';
 import { QueryDataUsers }                                               from '../../api/apiConsults.js';
@@ -35,7 +35,7 @@ export function MainInterfazFacturacion({navigation}){
             setLoading(false);
             setOpList(response3.data.data.opList);
             setOcrList(response3.data.data.ocrList.slice(0,3));
-            setModulosList(response3.data.data.modulosList)
+            setModulosList(response3.data.data.moduloList)
 
         } catch (error) {
             console.log(error);
@@ -96,7 +96,7 @@ export function MainInterfazFacturacion({navigation}){
                         {ocrList.length===0?
                         <EmptyInterfaz data={"Una vez se empiece a generar registros prodrá visualizar la información de las OCR's aquí"}/>:
                         ocrList.map(element=><OcrComponent data={element} key={element.ocr_id}/>)}
-                        {ocrList.length===0?<></>:<OcrComponentButton/>}
+                        {ocrList.length===0?<></>:<OcrComponentButtonFacturacion/>}
 
                     </View>
                 </View>

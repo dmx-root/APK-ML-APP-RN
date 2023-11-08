@@ -1,79 +1,86 @@
-import { Alert, TouchableWithoutFeedback, FlatList}                          from 'react-native';
-import { StyleSheet, Text, View, Dimensions,}               from 'react-native';
-import { ModuloIconList }                                   from '../../view/iconosSvg';
-import { OcrModuloComponent }                               from '../../components/facturacionVersion/ocrModuloComponent';
-import { useAdminContext } from '../../context/adminContext';
+import { ModuloComponentAdmin }                                     from '../../components/adminVersion/moduloComponentAdmin';
+import { useAdminContext }                                          from '../../context/adminContext';
+import { FlatList,TouchableWithoutFeedback}                         from 'react-native';
+import { StyleSheet, View, Dimensions,Text}                             from 'react-native';
+import { QueryDataModulo }                                          from '../../api/apiConsults'
 import { useMainContex } from '../../context/mainContext';
-import { QueryDataModulo } from '../../api/apiConsults';
-import { useEffect, useState } from 'react';
-import { EmptyInterfaz } from '../../components/allVersions/emptyInterfaz';
-import { LoadingComponent } from '../../components/loadingComponent';
+import { ModuloInformationComponentAdmin } from '../../components/adminVersion/moduloInformationComponentAdmin';
+import { ModuloIconList2 } from '../../view/iconosSvg';
 
 const {width,height}=Dimensions.get('window');
-
-const currentColorMain='#44329C';   //azul oscuro
-const currentColorMain1='#C7CCEC';  //Azul claro
-const currentColorMain3='#44329ca5';//Azul claro intermedio
 const currentColorMain4='#e1e1e1';  //color de letra resaltado
 
-export function ModalModulosOcrListAdmin(){
+export function ModalAllOcrList(){
 
-    const {setModalModulosOcrList}=useAdminContext();
-    const {DNS,userToken}=useMainContex(); 
-    const [ocrList,setOcrList]= useState([]);
-    const [loading,setLoading]=useState(true);
-
-    const ApiQueryModulo= new QueryDataModulo(DNS,'/api/ml/modulo/get/',userToken);
-    useEffect(()=>{
-        loadInformation();
-    },[]);
-
-    async function loadInformation(){
-        try {
-
-            const response=await ApiQueryModulo.getOcrByModulo(2);
-            setOcrList(response.data.data.ocrList);
-            setLoading(false)
-            // if(response.data.statusCodeApi!==1){
-            //     // Alert.alert('Error de servidor', '')
-            // }
-
-        } catch (error) {
-            console.log(error),
-            Alert.alert('Error de servidor','Hubo un problema a la hora de intentar cargar la información, inténtelo más tarde');
-        }
-    }
+    // const {modulosList,setModalModulosInformation}=useAdminContext();
+    
     return(
-        <TouchableWithoutFeedback onPress={()=>{setModalModulosOcrList(false)}}>
+        <TouchableWithoutFeedback onPress={()=>{setModalModulosInformation(false)}}>
             <View style={StyleInfoViewOP.windowContainer}>
                 <TouchableWithoutFeedback onPress={()=>{}}>
                     <View style={StyleInfoViewOP.window}>
                         <View style={StyleInfoViewOP.header}>
-                            <View style={StyleInfoViewOP.iconContainer}>
-                                <ModuloIconList/>
+                            
+                            <View style={StyleInfoViewOP.column}>
+                                <View style={StyleInfoViewOP.row}>
+                                    <View style={StyleInfoViewOP.tittleContainer}>
+                                        <Text style={StyleInfoViewOP.title}>OPERANDO</Text>
+                                    </View>
+                                    <View style={StyleInfoViewOP.contentContainer}>
+                                        <Text style={StyleInfoViewOP.content}>Content</Text>
+                                    </View>
+                                </View>
+                                <View style={StyleInfoViewOP.row}>
+                                    <View style={StyleInfoViewOP.tittleContainer}>
+                                        <Text style={StyleInfoViewOP.title}>FALT. INSU</Text>
+                                    </View>
+                                    <View style={StyleInfoViewOP.contentContainer}>
+                                        <Text style={StyleInfoViewOP.content}>Content</Text>
+                                    </View>
+                                </View>
+                                <View style={StyleInfoViewOP.row}>
+                                    <View style={StyleInfoViewOP.tittleContainer}>
+                                        <Text style={StyleInfoViewOP.title}>DAÑOS MEC.</Text>
+                                    </View>
+                                    <View style={StyleInfoViewOP.contentContainer}>
+                                        <Text style={StyleInfoViewOP.content}>Content</Text>
+                                    </View>
+                                </View>
+                                
                             </View>
-                            <View style={StyleInfoViewOP.information}>
-                                <View style={StyleInfoViewOP.rowTittle}>
-                                    <Text style={StyleInfoViewOP.tittle}>No. MODULO</Text>
-                                    <Text style={StyleInfoViewOP.tittle}>No. OPERARIOS</Text>
-                                    <Text style={StyleInfoViewOP.tittle}>OP ACTUAL</Text>
-                                    <Text style={StyleInfoViewOP.tittle}>TALLA ACTUAL</Text>
+                            <View style={StyleInfoViewOP.column}>
+                                <View style={StyleInfoViewOP.row}>
+                                    <View style={StyleInfoViewOP.tittleContainer}>
+                                        <Text style={StyleInfoViewOP.title}>INACTIVOS</Text>
+                                    </View>
+                                    <View style={StyleInfoViewOP.contentContainer}>
+                                        <Text style={StyleInfoViewOP.content}>Content</Text>
+                                    </View>
                                 </View>
-                                <View style={StyleInfoViewOP.rowContent}>
-                                    <Text style={StyleInfoViewOP.content}>MODULO-1</Text>
-                                    <Text style={StyleInfoViewOP.content}>5</Text>
-                                    <Text style={StyleInfoViewOP.content}>MOP3548</Text>
-                                    <Text style={StyleInfoViewOP.content}>XL</Text>
+                                <View style={StyleInfoViewOP.row}>
+                                    <View style={StyleInfoViewOP.tittleContainer}>
+                                        <Text style={StyleInfoViewOP.title}>Tittle</Text>
+                                    </View>
+                                    <View style={StyleInfoViewOP.contentContainer}>
+                                        <Text style={StyleInfoViewOP.content}>Content</Text>
+                                    </View>
                                 </View>
+                                <View style={StyleInfoViewOP.row}>
+                                    <View style={StyleInfoViewOP.tittleContainer}>
+                                        <Text style={StyleInfoViewOP.title}>Tittle</Text>
+                                    </View>
+                                    <View style={StyleInfoViewOP.contentContainer}>
+                                        <Text style={StyleInfoViewOP.content}>Content</Text>
+                                    </View>
+                                </View>
+                                
                             </View>
                         </View>
                         <View style={StyleInfoViewOP.root}>
-        
                             
-                            {loading?<LoadingComponent message={'Cargando lista de OCR'}/>:ocrList.length===0?<EmptyInterfaz data={'No se han ingresado elemeentos en el módulo'}/>:<FlatList style={StyleInfoViewOP.flatList} renderItem={item=>
-                            <OcrModuloComponent data={item}/>} data={ocrList} key={element=>element.mdl_id}/>}
-                          
-                        </View>
+                            {/* <FlatList style={StyleInfoViewOP.flatList} renderItem={item=>
+                            <ModuloInformationComponentAdmin data={item}/>} data={modulosList} key={element=>element.mdl_id}/> */}
+                        </View>         
                     </View>
                 </TouchableWithoutFeedback>
             </View>
@@ -85,39 +92,39 @@ const StyleInfoViewOP=StyleSheet.create({
         justifyContent:'center',
         alignItems:'center',
         position:'absolute',
-        zIndex:5,
+        zIndex:0,
         height,
         width,
         backgroundColor:'#00000050'
     },
     window:{
         height:height*0.8,
-        width:width*0.8,
+        width:width*0.80,
         backgroundColor:'#FFF',
-        // backgroundColor:currentColorMain1,
         borderRadius:height*0.01,
         justifyContent:'center',
         alignItems:'center'
     },
     header:{
-        height:'17%',
+        height:'15%',
         width:'95%',
-        // backgroundColor:currentColorMain1,
-
-        backgroundColor:'#EEE',
-        padding:'1%',
-        borderRadius:height*0.01,
+        borderRadius:height*0.009,
         alignSelf:'center',
-        flexDirection:'row'
+        flexDirection:'row',
+        backgroundColor:'#EEE'
+    },
+    frame:{
+        height:'80%',
+        width:'100%',
+        borderRadius:height*0.005,
     },
     root:{
         borderRadius:height*0.005,
         backgroundColor:'#FAFAFA',
         width:'95%',
-        height:'78%',
+        height:'80%',
         alignSelf:'center',
         marginTop:'3%',
-        // justifyContent:'center',
         alignItems:'center',
         borderWidth:height*0.0015,
         borderColor:currentColorMain4,
@@ -127,42 +134,43 @@ const StyleInfoViewOP=StyleSheet.create({
         height:'100%',
         width:'100%'
     },
-    iconContainer:{
-        width:'25%',
+    column:{
+        width:'48%',
+        height:'100%',
+    },
+    // columnIcon:{
+    //     width:'20%',
+    //     height:'100%',
+    //     justifyContent:'center',
+    //     alignItems:'center'
+    // },
+    row:{
+        width:'100%',
+        height:'33%',
+        flexDirection:'row'
+    },
+    tittleContainer:{
+        width:'65%',
         height:'100%',
         justifyContent:'center',
         alignItems:'center',
         // backgroundColor:'aqua'
     },
-    information:{
-        flexDirection:'row',
-        // backgroundColor:'aqua',
-        width:'75%',
+    contentContainer:{
+        width:'35%',
         height:'100%',
-
+        justifyContent:'center',
+        alignItems:'center'
     },
-    rowTittle:{
-        width:'50%',
-        height:'100%'
-    },
-    rowContent:{
-        width:'50%',
-        height:'100%'
-    },
-    tittle:{
-        height:'25%',
-        width:'100%',
-        fontWeight:'bold',
+    title:{
         fontSize:height*0.015,
-        color:'#777'
-        
+        fontWeight:'bold',
+        color:'#888'
     },
     content:{
-        height:'25%',
-        width:'100%',
-        // fontWeight:'bold',
         fontSize:height*0.015,
+        // fontWeight:'bold',
         color:'#999'
+
     }
-   
 })

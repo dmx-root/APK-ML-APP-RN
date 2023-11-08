@@ -1,6 +1,7 @@
 import { StyleSheet,Text,View, Dimensions, TouchableOpacity} from 'react-native';
 import { PlusCirc } from '../../view/iconosSvg'
 import { useEffect, useState } from 'react';
+import { useFacturacionContext } from '../../context/facturacionContext';
 
 const {width,height}=Dimensions.get('window');
 
@@ -8,10 +9,12 @@ const currentColorMain1='#C7CCEC';  //Azul claro
 const currentColorMain2='#e8e8e8';  //gris muy claro
 const currentColorMain3='#44329ca5';//Azul claro intermedio
 
-export function OcrComponentButton(props){
+export function OcrComponentButtonFacturacion(props){
     
+    const {setModalAllOcrList}= useFacturacionContext();
+
     return(
-    <TouchableOpacity style={StyleOcr.ocrContainer1} onPress={()=>{}}>
+    <TouchableOpacity style={StyleOcr.ocrContainer1} onPress={()=>{setModalAllOcrList(true)}}>
         <PlusCirc/>
         <Text style={{color:currentColorMain3,fontWeight:'bold',fontSize:height*0.015}}>Ver más...</Text>
     </TouchableOpacity>

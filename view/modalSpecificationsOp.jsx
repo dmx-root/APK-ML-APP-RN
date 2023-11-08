@@ -22,27 +22,16 @@ export function ModalSpecificationsOp(){
     const [loading,setLoading ]=useState(true);
 
     useEffect(()=>{
-        mainView===3?loadInformationByUser():loadInformationAll();
-
+       loadInformation();
     },[]);
 
-    async function loadInformationByUser(){
-        const ApiQueryOp=new QueryDataOp(DNS,'/api/ml/op/specifications/');
-        try {
-            const response=await ApiQueryOp.getSpecificationOp(opInfoInterfaz.op);
-            setSpeOp(response.data.data);
-            setLoading(false);
-        } catch (error) {
-            console.log(error);
-            Alert.alert('Error de servidor','Hubo un error a la hora de cargar la información, intentelo más tarde');
-        }
-    }
-    async function loadInformationAll(){
-        const ApiQueryOp=new QueryDataOp(DNS,'/api/ml/op/all/specifications/');
+    async function loadInformation(){
+        const ApiQueryOp=new QueryDataOp(DNS,'/api/ml/op/get/details/');
         try {
             const response=await ApiQueryOp.getAllSpecificationOp(opInfoInterfaz.op);
             setSpeOp(response.data.data);
             setLoading(false);
+            // console.log(response.data)
         } catch (error) {
             console.log(error);
             Alert.alert('Error de servidor','Hubo un error a la hora de cargar la información, intentelo más tarde');

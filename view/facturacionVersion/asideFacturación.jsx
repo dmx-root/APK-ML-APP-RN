@@ -25,6 +25,7 @@ export function AsideInvitado({navigation}){
           console.error('Error al eliminar el valor:', error);
         }
       };
+
     const handlerCloseSesion=()=>{
         setLoading(true);
         removeData();
@@ -34,6 +35,7 @@ export function AsideInvitado({navigation}){
         setLoading(false);
         setAsideState(false)
     }
+    
     if(loading){
         return(
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

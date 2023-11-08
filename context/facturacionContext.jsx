@@ -18,6 +18,7 @@ export function FacturacionContextProvider({children}){
     const [modulosList,setModulosList]=useState({});
     const [modalModulosList,setModalModulosList]=useState(false);
     const [modalModulosOcrList,setModalModulosOcrList]=useState(false);
+    const [modalAllOcrList,setModalAllOcrList]=useState(false);
 
     const data={
         asideState,setAsideState,
@@ -27,7 +28,8 @@ export function FacturacionContextProvider({children}){
         modalOcrInfo,setModalOcrInfo,
         modalModulosList,setModalModulosList,
         modulosList,setModulosList,
-        modalModulosOcrList,setModalModulosOcrList
+        modalModulosOcrList,setModalModulosOcrList,
+        modalAllOcrList,setModalAllOcrList
     }
 
     return(

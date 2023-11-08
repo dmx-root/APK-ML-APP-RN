@@ -31,7 +31,7 @@ export function ModuloComponent({data}){
                         <Text style={StyleInfoViewOcr.labelTitle}>No. OPERARIO</Text>
                     </View>
                     <View style={StyleInfoViewOcr.fieldContainer}>
-                        <Text style={StyleInfoViewOcr.fieldontent}>--- --- --</Text>
+                        <Text style={StyleInfoViewOcr.fieldontent}>{data.item.number_employees}</Text>
                     </View>
                 </View>
                 <View style={StyleInfoViewOcr.rowContente}>

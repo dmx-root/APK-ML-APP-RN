@@ -1,19 +1,45 @@
-import {  Image, Alert, ActivityIndicator,FlatList,Modal, TouchableWithoutFeedback} from 'react-native';
+import { Alert,FlatList,TouchableWithoutFeedback}                                   from 'react-native';
 import { StyleSheet, Text, View, Dimensions,}                                       from 'react-native';
-import { useFacturacionContext } from '../../context/facturacionContext';
-import { ModuloIconList } from '../../view/iconosSvg';
-import { OcrModuloComponent } from '../../components/facturacionVersion/ocrModuloComponent';
+import { useEffect, useState }                                                      from 'react';
+import { useFacturacionContext }                                                    from '../../context/facturacionContext';
+import { ModuloIconList }                                                           from '../../view/iconosSvg';
+import { OcrModuloComponent }                                                       from '../../components/facturacionVersion/ocrModuloComponent';
+import { useMainContex }                                                            from '../../context/mainContext';
+import { EmptyInterfaz }                                                            from '../../components/allVersions/emptyInterfaz';
+import { LoadingComponent }                                                         from '../../components/loadingComponent';
+import {QueryDataModulo}                                                            from '../../api/apiConsults';
 
 const {width,height}=Dimensions.get('window');
 
-const currentColorMain='#44329C';   //azul oscuro
-const currentColorMain1='#C7CCEC';  //Azul claro
-const currentColorMain3='#44329ca5';//Azul claro intermedio
 const currentColorMain4='#e1e1e1';  //color de letra resaltado
 
 export function ModalModulosOcrList(){
 
     const {setModalModulosOcrList}=useFacturacionContext();
+    const {userToken,DNS}= useMainContex();
+
+    const [ocrList,setOcrList]= useState([]);
+    const [loading,setLoading]=useState(true);
+    
+    const ApiQueryModulo= new QueryDataModulo(DNS,'/api/ml/modulo/get/',userToken);
+
+    useEffect(()=>{
+        loadInformation();
+    },[]);
+    
+    async function loadInformation(moduloId){
+        try {
+            
+            const response=await ApiQueryModulo.getOcrByModulo(3);
+            setOcrList(response.data.data.ocrList);
+            setLoading(false);
+            console.log('entró')
+
+        } catch (error) {
+            console.log(error),
+            Alert.alert('Error de servidor','Hubo un problema a la hora de intentar cargar la información, inténtelo más tarde');
+        }
+    }
 
     return(
         <TouchableWithoutFeedback onPress={()=>{setModalModulosOcrList(false)}}>
@@ -40,12 +66,10 @@ export function ModalModulosOcrList(){
                             </View>
                         </View>
                         <View style={StyleInfoViewOP.root}>
-                            <OcrModuloComponent/>
-                            <OcrModuloComponent/>
-                            <OcrModuloComponent/>
-                            <OcrModuloComponent/>
-                            {/* <FlatList style={StyleInfoViewOP.flatList} renderItem={item=>
-                            <ModuloComponent data={item}/>} data={modulosList} key={element=>element.mdl_id}/> */}
+
+                            {loading?<LoadingComponent message={'Cargando lista de OCR'}/>:ocrList.length===0?<EmptyInterfaz data={'No se han ingresado elemeentos en el módulo'}/>:<FlatList style={StyleInfoViewOP.flatList} renderItem={item=>
+                            <OcrModuloComponent data={item}/>} data={ocrList} key={element=>element.mdl_id}/>}
+
                         </View>
                     </View>
                 </TouchableWithoutFeedback>

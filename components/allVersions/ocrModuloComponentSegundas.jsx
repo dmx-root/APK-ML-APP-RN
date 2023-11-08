@@ -7,26 +7,18 @@ const {width,height}=Dimensions.get('window');
 const currentColorMain='#888';   
 const currentColorMain4='#e1e1e1';  //color de letra resaltado
 
-export function OcrModuloComponent({data}){
+export function OcrModuloComponentSegundas({data}){
     
     // console.log(data.item)
     return(
         <TouchableOpacity style={StyleInfoViewOcr.header1} onPress={()=>{}}>
             <View style={StyleInfoViewOcr.iconContainer}>
-                <OCRIcon data={{color:currentColorMain,size:width*0.08,}}/>
+                <OCRIcon data={{color:'#44329C',size:width*0.08,}}/>
             </View>
             <View style={StyleInfoViewOcr.iconCheckContainer}>
-                {data.item.prc_state?<CheckBoxFill data={{color:'#666',size:height*0.025}}/>:<CheckBoxEmpty data={{color:'#BBB',size:height*0.025}}/>}
+                {data.item.prc_state?<CheckBoxFill data={{color:'#44329C',size:height*0.025}}/>:<CheckBoxEmpty data={{color:'#44329ca5',size:height*0.025}}/>}
             </View>
             <View style={StyleInfoViewOcr.rowField}>
-                <View style={StyleInfoViewOcr.rowContente}>
-                    <View style={StyleInfoViewOcr.fieldContainer}>
-                        <Text style={StyleInfoViewOcr.labelTitle}>HORA-I</Text>
-                    </View>
-                    <View style={StyleInfoViewOcr.fieldContainer}>
-                        <Text style={StyleInfoViewOcr.fieldontent}>{data.item.start_operation}</Text>
-                    </View>
-                </View>
                 <View style={StyleInfoViewOcr.rowContente}>
                     <View style={StyleInfoViewOcr.fieldContainer}>
                         <Text style={StyleInfoViewOcr.labelTitle}>FECHA:</Text>
@@ -53,14 +45,7 @@ export function OcrModuloComponent({data}){
                 </View>
             </View>
             <View style={StyleInfoViewOcr.rowField}>
-                <View style={StyleInfoViewOcr.rowContente}>
-                    <View style={StyleInfoViewOcr.fieldContainer}>
-                        <Text style={StyleInfoViewOcr.labelTitle}>HORA-F</Text>
-                    </View>
-                    <View style={StyleInfoViewOcr.fieldContainer}>
-                        <Text style={StyleInfoViewOcr.fieldontent}>{data.item.finish_operation}</Text>
-                    </View>
-                </View>
+
                 <View style={StyleInfoViewOcr.rowContente}>
                     <View style={StyleInfoViewOcr.fieldContainer}>
                         <Text style={StyleInfoViewOcr.labelTitle}>MODULO</Text>
@@ -92,9 +77,9 @@ export function OcrModuloComponent({data}){
 const StyleInfoViewOcr=StyleSheet.create({
 
     header1:{
-        height:height*0.12,
+        height:height*0.09,
         width:'98%',
-        backgroundColor:currentColorMain4,
+        backgroundColor:'#C7CCEC',
         borderRadius:height*0.004,
         alignSelf:'center',
         flexDirection:'row',
@@ -137,7 +122,7 @@ const StyleInfoViewOcr=StyleSheet.create({
     },
     rowContente:{
         width:'100%',
-        height:'25%',
+        height:'33%',
         flexDirection:'row',
     },
     fieldContainer:{
@@ -148,12 +133,12 @@ const StyleInfoViewOcr=StyleSheet.create({
         paddingLeft:'8%'
     },
     labelTitle:{
-        color:currentColorMain,
+        color:'#44329C',
         fontWeight:'bold',
         fontSize:width*0.024
     },
     fieldontent:{
-        color:'#999',
+        color:'#44329ca5',
         fontSize:height*0.015
     },
     icon:{

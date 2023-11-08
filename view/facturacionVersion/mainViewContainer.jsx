@@ -8,12 +8,14 @@ import { ModalOcrList }                 from "../modalOcrList";
 import { MainInterfazFacturacion }      from "./mainInterfazFacturacion";
 import { Modal }                        from "react-native";
 import { AsideFacturacion }             from "../../modals/facturacionVersion/asideFacturacion";
+import { ModalAllOcrList } from "../../modals/facturacionVersion/modalAllOcrList";
+import { ModalCheckInUnidadesFacturacion } from "../../modals/facturacionVersion/modalCheckInUnidadesFacturacion";
 
 export function MainViewContainerFacturacion({navigation}){
     
-    const {asideState,modalModulosList,modalModulosOcrList }=useFacturacionContext();
+    const {asideState,modalModulosList,modalModulosOcrList,modalAllOcrList }=useFacturacionContext();
     const { modalOcrInfo, modalSpecificationOP, modalOcrList }=useMainContex();
-    console.log(modalOcrInfo);
+    
     return(
         <>
         
@@ -54,6 +56,19 @@ export function MainViewContainerFacturacion({navigation}){
               visible={modalModulosOcrList}>
                 <ModalModulosOcrList/>
             </Modal>
+             <Modal
+              animationType="fade"
+              transparent={true}
+              visible={modalAllOcrList}>
+                <ModalAllOcrList/>
+            </Modal>
+             <Modal
+              animationType="fade"
+              transparent={true}
+              visible={true}>
+                <ModalCheckInUnidadesFacturacion/>
+            </Modal>
+
         </>
     )
 }

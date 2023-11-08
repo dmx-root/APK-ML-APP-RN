@@ -1,7 +1,7 @@
 import { ModuloComponent }                                          from '../../components/facturacionVersion/moduloComponent';
 import { useFacturacionContext }                                    from '../../context/facturacionContext';
 import { FlatList,TouchableWithoutFeedback}                         from 'react-native';
-import { StyleSheet, View, Dimensions,}                             from 'react-native';
+import { StyleSheet, View, Dimensions,Text}                         from 'react-native';
 
 const {width,height}=Dimensions.get('window');
 const currentColorMain4='#e1e1e1';  //color de letra resaltado
@@ -9,13 +9,14 @@ const currentColorMain4='#e1e1e1';  //color de letra resaltado
 export function ModalModulosList(){
 
     const {modulosList,setModalModulosList}=useFacturacionContext();
-
+    console.log(modulosList);
     return(
         <TouchableWithoutFeedback onPress={()=>{setModalModulosList(false)}}>
             <View style={StyleInfoViewOP.windowContainer}>
                 <TouchableWithoutFeedback onPress={()=>{}}>
                     <View style={StyleInfoViewOP.window}>
                         <View style={StyleInfoViewOP.root}>
+                            {/* <Text>Hola</Text> */}
                             <FlatList style={StyleInfoViewOP.flatList} renderItem={item=>
                             <ModuloComponent data={item}/>} data={modulosList} key={element=>element.mdl_id}/>
                         </View>
