@@ -37,12 +37,12 @@ export function MainViewContainerAdmin({navigation}){
               visible={modalModulosList}>
                 <ModalModulosListAdmin navigation={navigation}/>
           </Modal>
-          <Modal
+          {/* <Modal
               animationType="fade"
               transparent={true}
               visible={modalModulosOcrList}>
                 <ModalModulosOcrListAdmin navigation={navigation}/>
-          </Modal>
+          </Modal> */}
           <Modal
               animationType="fade"
               transparent={true}

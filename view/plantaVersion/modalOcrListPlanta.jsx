@@ -1,14 +1,14 @@
-import { usePlantaContext }                                                         from '../context/plantaContext';
-import { useMainContex }                                                            from '../context/mainContext';
 import {  Image, Alert, ActivityIndicator,FlatList,Modal, TouchableWithoutFeedback} from 'react-native';
 import { StyleSheet, Text, View, Dimensions,}                                       from 'react-native';
 import { useEffect, useState }                                                      from 'react';
-import { QueryDataOCR } from '../api/apiConsults.js';
-import { DatabaseIcon } from '../view/iconosSvg.jsx';
-import { OcrSpeComponent } from '../components/ocrSpeComponent.jsx';
-import { LoadingComponent } from '../components/loadingComponent';
-import { EmptyInterfaz } from '../components/allVersions/emptyInterfaz';
-import { OcrModuloComponent } from '../components/facturacionVersion/ocrModuloComponent.jsx';
+import { usePlantaContext }                                                         from '../../context/plantaContext';
+import { useMainContex }                                                            from '../../context/mainContext';
+import { QueryDataOCR }                                                             from '../../api/apiConsults.js';
+import { DatabaseIcon }                                                             from '../../view/iconosSvg.jsx';
+import { OcrSpeComponent }                                                          from '../../components/ocrSpeComponent.jsx';
+import { LoadingComponent }                                                         from '../../components/loadingComponent';
+import { EmptyInterfaz }                                                            from '../../components/allVersions/emptyInterfaz';
+import { OcrModuloComponent }                                                       from '../../components/facturacionVersion/ocrModuloComponent.jsx';
 
 const {width,height}=Dimensions.get('window');
 
@@ -17,7 +17,7 @@ const currentColorMain1='#C7CCEC';  //Azul claro
 const currentColorMain3='#44329ca5';//Azul claro intermedio
 const currentColorMain4='#e1e1e1';  //color de letra resaltado
 
-export function ModalOcrList(){
+export function ModalOcrListPlanta(){
 
     const {DNS, setModalOcrList, opSpeInfoInterfaz } = useMainContex();
     const [ocrList,setOcrList]=useState([]);
@@ -110,7 +110,7 @@ export function ModalOcrList(){
                             ocrList.length===0?
                             <EmptyInterfaz data={'No se ha ingresado información al detalle de la OP'}/>:
                             <FlatList style={StyleInfoViewOP.flatList} renderItem={item=>
-                            <OcrModuloComponent data={item}/>} 
+                            <OcrSpeComponent data={item}/>} 
                             data={ocrList} key={element=>element.ocr_list}/>}
                         </View>
                     </View>

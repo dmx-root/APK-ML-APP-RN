@@ -12,16 +12,14 @@ const {height,width} =Dimensions.get('window')
 export function ModalRegisterSegProducts(){
    
     
-    const {modalRegisterSegundas,setRegisterSegundas,segList,informationSegundas}=usePlantaContext();
+    const {setRegisterSegundas,segList,informationSegundas}=usePlantaContext();
     const {currentUser,DNS,userToken} =useMainContex();
     
     const [valueCode,setValueCode,]=useState();
     const [ocrList,setOcrList]=useState([]);
-    const [ocrListColum1,setOcrListColum1]=useState([]);
-    const [ocrListColum2,setOcrListColum2]=useState([]);
     const [information,setInformation]=useState({});
     
-    const ApiQueryOcr=new QueryDataOCR(DNS,'/api/ml/ocr/segundas/register/',userToken);
+    const ApiQueryOcr=new QueryDataOCR(DNS,'/api/ml/ocr/register/segundas',userToken);
 
     const [currentValue,setCurrentValue]=useState({
         currentColor:'--- --- ---',
@@ -32,13 +30,18 @@ export function ModalRegisterSegProducts(){
     const input=useRef(null);
     
     useEffect(()=>{
+
         input.current.focus();
         setInformation(informationSegundas);
+
     },[]);
 
     async function loadInformation(data){
         try {
             const response=await ApiQueryOcr.registerSegundasOcr(data);
+            if(response.data.statusCodeApi===1){
+                setRegisterSegundas(false)
+            }
             console.log(response.data)
         } catch (error) {
             console.log(error);
@@ -51,56 +54,43 @@ export function ModalRegisterSegProducts(){
         input.current.focus();
 
         setValueCode('');
-        const filterValue=segList.find((element)=>element.ean===valueCode);
-        
+        const filterValue=segList.find((element)=>element.ean_id===valueCode);
         if(filterValue){
 
             const newValue={
                 currentColor:filterValue.color_label,
-                currentTalla:filterValue.tll_label,
-                currentEAN:filterValue.ean 
+                currentTalla:filterValue.tll_id,
+                currentEAN:filterValue.ean_id 
             }
 
             setCurrentValue(newValue);
 
             const newOcr={
-                registerBy:currentUser.user_document_id,
-                op:filterValue.op,
-                colorId:filterValue.color_id,
-                colorLabel:filterValue.color_label,
-                tallaId:filterValue.tll_id,
-                tallaLabel:filterValue.tll_label,
+                registerById:currentUser.user_document_id,
                 moduloId:informationSegundas.modulo,
-                ean:filterValue.ean,
-                cantidadUnidades:1,
-                startTime:new Date().toLocaleTimeString(),
-                finishTime:new Date().toLocaleTimeString(),
-                dete:new Date().toDateString(),
-                motivoParada:null
+                unitsCant:1,
+                tallaId:filterValue.tll_id,
+                colorId:filterValue.color_id,
+                opId:filterValue.op,
+                ean:filterValue.ean_id,
             };
-            console.log(newOcr)
+            
             const valueFinded=ocrList.filter(element=>element.ean===valueCode);
-            // console.log(valueFinded)
+            console.log(valueFinded)
             if(valueFinded.length===0){
 
                 setOcrList([...ocrList,newOcr]);
-                // ocrListColum1.length<3?setOcrListColum1(ocrList.slice(0,3)):setOcrListColum2(ocrList.slice(3,6));
-
-                // ocrList.length<3?setOcrListColum1([...ocrList,newOcr]):setOcrListColum2([...ocrList,newOcr]);
                 
-            }else{
+            }
+            else{
                 const alterList=ocrList.map(element=>{
                     if(element.ean===valueCode){
-                        element.cantidadUnidades=element.cantidadUnidades+1;
+                        element.unitsCant=element.unitsCant+1;
                     }
                     return element;
                 });
                 // console.log(alterList);
-                console.log(2)
             }
-
-            console.log(ocrList)
-
         }else{
             Alert.alert('¡Error en el código de barras!','El código de barras ingresado no pertenece a la OP seleccionada');
         }
@@ -108,11 +98,18 @@ export function ModalRegisterSegProducts(){
    
     const handlerSubmit=()=>{
         if(ocrList.length!==0){ 
-
-            var bodyData={}
-            ocrList.forEach((element,index)=>{
-                bodyData[`element${index+1}`]=element;
+            const bodyData=ocrList.map(element=>{
+                const newBodyData={
+                    registerById:element.registerById,
+                    moduloId:element.moduloId,
+                    unitsCant:element.unitsCant,
+                    tallaId:element.tallaId,
+                    colorId:element.colorId,
+                    opId:element.opId
+                }
+                return newBodyData
             });
+            console.log(bodyData)
             loadInformation(bodyData);
 
         }else{

@@ -8,6 +8,7 @@ import { useMainContex }                                                        
 import { EmptyInterfaz }                                                            from '../../components/allVersions/emptyInterfaz';
 import { LoadingComponent }                                                         from '../../components/loadingComponent';
 import {QueryDataModulo}                                                            from '../../api/apiConsults';
+import { OcrModuloComponentSegundas }                                               from '../../components/allVersions/ocrModuloComponentSegundas';
 
 const {width,height}=Dimensions.get('window');
 
@@ -15,8 +16,8 @@ const currentColorMain4='#e1e1e1';  //color de letra resaltado
 
 export function ModalModulosOcrList(){
 
-    const {setModalModulosOcrList}=useFacturacionContext();
-    const {userToken,DNS}= useMainContex();
+    const {setModalModulosOcrList,idElementRevise,setIdElementRevise}=useFacturacionContext();
+    const {userToken,DNS,moduloInfoInterfaz,}= useMainContex();
 
     const [ocrList,setOcrList]= useState([]);
     const [loading,setLoading]=useState(true);
@@ -24,16 +25,28 @@ export function ModalModulosOcrList(){
     const ApiQueryModulo= new QueryDataModulo(DNS,'/api/ml/modulo/get/',userToken);
 
     useEffect(()=>{
-        loadInformation();
+        loadInformation(moduloInfoInterfaz.moduloId);
     },[]);
+
+    useEffect(()=>{
+        if(idElementRevise){
+            const alterArray=ocrList.map(element=>{
+                if(element.ocr_id==idElementRevise){
+                    element.prc_state=1;
+                    return element
+                }
+                return element
+            });
+            setOcrList(alterArray);
+        }
+    },[idElementRevise]);
     
     async function loadInformation(moduloId){
         try {
             
-            const response=await ApiQueryModulo.getOcrByModulo(3);
+            const response=await ApiQueryModulo.getOcrByModulo(moduloId);
             setOcrList(response.data.data.ocrList);
             setLoading(false);
-            console.log('entró')
 
         } catch (error) {
             console.log(error),
@@ -67,8 +80,14 @@ export function ModalModulosOcrList(){
                         </View>
                         <View style={StyleInfoViewOP.root}>
 
-                            {loading?<LoadingComponent message={'Cargando lista de OCR'}/>:ocrList.length===0?<EmptyInterfaz data={'No se han ingresado elemeentos en el módulo'}/>:<FlatList style={StyleInfoViewOP.flatList} renderItem={item=>
-                            <OcrModuloComponent data={item}/>} data={ocrList} key={element=>element.mdl_id}/>}
+                            {loading?
+                            <LoadingComponent message={'Cargando lista de OCR'}/>:
+                            ocrList.length===0?
+                            <EmptyInterfaz data={'No se han ingresado elemeentos en el módulo'}/>:
+                            <FlatList style={StyleInfoViewOP.flatList} renderItem={item=>
+                            item.item.ctg_id===1?
+                            <OcrModuloComponent data={item}/>:
+                            <OcrModuloComponentSegundas data={item}/>} data={ocrList} key={element=>element.mdl_id}/>}
 
                         </View>
                     </View>

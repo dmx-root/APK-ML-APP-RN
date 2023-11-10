@@ -1,5 +1,11 @@
-import {Dimensions,View,TextInput,Text,TouchableOpacity,StyleSheet, TouchableWithoutFeedback, Alert} from 'react-native'
-import { useEffect, useRef, useState } from 'react';
+import {Dimensions,View,Text,TouchableOpacity,StyleSheet, Alert, ActivityIndicator}    from 'react-native'
+import { OCRIcon1 }                                                                                     from '../../view/iconosSvg';
+import { useFacturacionContext }                                                                        from '../../context/facturacionContext';
+import { useMainContex }                                                                                from '../../context/mainContext';
+import { QueryDataOCR } from '../../api/apiConsults';
+import { EmptyInterfaz } from '../../components/allVersions/emptyInterfaz';
+import { useState } from 'react';
+import { LoadingInterfaz } from '../../view/loadingInterfaz';
 
 
 
@@ -7,78 +13,204 @@ const {height,width} =Dimensions.get('window')
 
 export function ModalCheckInUnidadesFacturacion(){
     
+    const {setModalCheckInUnits,idElementRevise,setIdElementRevise}=useFacturacionContext();
+    const {ocrInfoInterfaz,currentUser,DNS,userToken}=useMainContex();
+    const [statusResponse,setSatusResponse]=useState(false);
+    const [reviseState,setReviseState]=useState(false);
 
+    const ApiQueryOcr= new QueryDataOCR(DNS,'/api/ml/ocr/checkIn',userToken);
+
+    async function loadInformation(){
+        try {
+            const response= await ApiQueryOcr.checkInOcr({ocrId:ocrInfoInterfaz.ocr_id,documentId:currentUser.user_document_id});
+            setIdElementRevise(ocrInfoInterfaz.ocr_id);
+            if(response.data.statusCodeApi==1){
+                setSatusResponse(false);
+                setReviseState(true);
+            }
+            // console.log(response.data)
+            
+        } catch (error) {
+            console.log(error);
+            Alert.alert('Error de servidor','Huvo un problema a la hora de intentar cargar la información, inténtelo más tarde');
+        }
+    }
+    
+    const hanlerReviseButtom=()=>{
+        setSatusResponse(true);
+        loadInformation();
+    }
     return(
-        <TouchableWithoutFeedback onPress={()=>{}}>
-            <View style={StyleModalEdit.root}>
-                <TouchableWithoutFeedback onPress={()=>{}}>
-                    <View style={StyleModalEdit.boxMesagge}>
-                        
-                        <View style={StyleModalEdit.fame}>
-                            
+        <View style={StyleModalEdit.root}>
+        <View style={StyleModalEdit.boxMesagge}>
+            <View style={StyleModalEdit.titleContainer}>
+                <View style={StyleModalEdit.iconContainer}>
+                    <OCRIcon1 data={{color:currentColorMain,fill:currentColorMain3,size:65}}/>
+                </View>
+                <View style={StyleModalEdit.column}>
+                    <View style={StyleModalEdit.row}>
+                        <View style={StyleModalEdit.tittleContainer}>
+                            <Text style={StyleModalEdit.title}>REG. POR</Text>
                         </View>
                         <View style={StyleModalEdit.contentContainer}>
-                            <View style={StyleModalEdit.fieldContainer}>
-                                <View style={StyleModalEdit.subtitlesContainer}>
-                                    <Text style={StyleModalEdit.subtitle}>OPERARIO/A</Text>
-                                </View>
-                                <View style={{justifyContent:'center',flex:1}}>
-                                    <Text style={{alignSelf:'center'}}>{}</Text>
-                                </View>
-                            </View>
-                            <View style={StyleModalEdit.fieldContainer}>
-                                <View style={StyleModalEdit.subtitlesContainer}>
-                                    <Text style={StyleModalEdit.subtitle}>ULTIMO CODIGO</Text>
-                                </View>
-                                <View style={{justifyContent:'center',flex:1}}>
-                                    <Text style={{alignSelf:'center'}}>{}</Text>
-                                </View>
-                            </View>
-                            <View style={StyleModalEdit.fieldContainer}>
-                                <View style={StyleModalEdit.subtitlesContainer}>
-                                    <Text style={StyleModalEdit.subtitle}>NUEVO REGISTRO</Text>
-                                </View>
-                                <View style={{justifyContent:'center',flex:1,alignSelf:'center'}}>
-                                    <TextInput
-                                    onChangeText={(text)=>{}} 
-                                    value={''}
-                                    // ref={input}
-                                    // onBlur={()}
-                                    ></TextInput>
-                                    <TouchableOpacity></TouchableOpacity>
-                                </View>
-                            </View>
-                            <TouchableOpacity 
-                            style={StyleModalEdit.fieldContainerButton}
-                            onPress={()=>{}}
-                            >
-                                <Text style={{color:currentColorMain,fontSize:width*0.03,fontWeight:'bold'}}>REGISTRAR</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={StyleModalEdit.actionContainer}>
-                            <TouchableOpacity
-                            style={[StyleModalEdit.buttons,{backgroundColor:currentColorMain1}]} 
-                            onPress={()=>{}}
-                            >
-                                <Text style={{color:currentColorMain,fontWeight:'bold',fontSize:width*0.03}}>CANCELAR</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity 
-                            style={[StyleModalEdit.buttons,{backgroundColor:currentColorMain}]}
-                            onPress={()=>{}}
-                            >
-                                <Text style={{color:'#FFF',fontWeight:'bold',fontSize:width*0.03}}>ENVIAR</Text>
-                            </TouchableOpacity>
-
+                            <Text style={StyleModalEdit.content}>{ocrInfoInterfaz.register_by_id.slice(0,10)}</Text>
                         </View>
                     </View>
-                </TouchableWithoutFeedback>
+                    <View style={StyleModalEdit.row}>
+                        <View style={StyleModalEdit.tittleContainer}>
+                            <Text style={StyleModalEdit.title}>REV. POR</Text>
+                        </View>
+                        <View style={StyleModalEdit.contentContainer}>
+                            <Text style={StyleModalEdit.content}>{ocrInfoInterfaz.check_in_by===null?'Sin Rev.':ocrInfoInterfaz.check_in_by.slice(0,10)}</Text>
+                        </View>
+                    </View>
+                    <View style={StyleModalEdit.row}>
+                        <View style={StyleModalEdit.tittleContainer}>
+                            <Text style={StyleModalEdit.title}>CATEG. REG</Text>
+                        </View>
+                        <View style={StyleModalEdit.contentContainer}>
+                            <Text style={StyleModalEdit.content}>{ocrInfoInterfaz.ctg_id===1?'1°':'2da'}</Text>
+                        </View>
+                    </View>
+                    
+                </View>
+                <View style={StyleModalEdit.column}>
+                    <View style={StyleModalEdit.row}>
+                        <View style={StyleModalEdit.tittleContainer}>
+                            <Text style={StyleModalEdit.title}>FECHA REG.</Text>
+                        </View>
+                        <View style={StyleModalEdit.contentContainer}>
+                            <Text style={StyleModalEdit.content}>{ocrInfoInterfaz.dete_creation.slice(0,10)}</Text>
+                        </View>
+                    </View>
+                    <View style={StyleModalEdit.row}>
+                        <View style={StyleModalEdit.tittleContainer}>
+                            <Text style={StyleModalEdit.title}>FECHA REV.</Text>
+                        </View>
+                        <View style={StyleModalEdit.contentContainer}>
+                            <Text style={StyleModalEdit.content}>{ocrInfoInterfaz.check_in_date===null?'Sin Rev.':ocrInfoInterfaz.check_in_date.slice(0,10)}</Text>
+                        </View>
+                    </View>
+                    <View style={StyleModalEdit.row}>
+                        <View style={StyleModalEdit.tittleContainer}>
+                            <Text style={StyleModalEdit.title}>HORA REV.</Text>
+                        </View>
+                        <View style={StyleModalEdit.contentContainer}>
+                            <Text style={StyleModalEdit.content}>{ocrInfoInterfaz.check_in_date===null?'Sin Rev.':ocrInfoInterfaz.check_in_date.slice(11,19)}</Text>
+                        </View>
+
+                    </View>
+                    
+                </View>
             </View>
-        </TouchableWithoutFeedback>
+            <View style={StyleModalEdit.containerField}>
+                <View style={StyleModalEdit.titleFieldContainer}>
+                    <Text style={ocrInfoInterfaz.ctg_id===1?StyleModalEdit.fontStyle:[StyleModalEdit.fontStyle,{color:currentColorMain2}]}>HORA-I</Text>
+                </View>
+                <View style={StyleModalEdit.contentFieldContainer}>
+                    <Text style={ocrInfoInterfaz.ctg_id===1?[StyleModalEdit.fontStyle,{fontWeight:'normal'}]:[StyleModalEdit.fontStyle,{fontWeight:'normal',color:currentColorMain2}]}>{ocrInfoInterfaz.ctg_id===2?'XX:XX:XX':ocrInfoInterfaz.start_operation}</Text>
+                </View>
+                <View style={StyleModalEdit.titleFieldContainer}>
+                    <Text style={ocrInfoInterfaz.ctg_id===1?StyleModalEdit.fontStyle:[StyleModalEdit.fontStyle,{color:currentColorMain2}]}>HORA-F</Text>
+                </View>
+                <View style={StyleModalEdit.contentFieldContainer}>
+                    <Text style={ocrInfoInterfaz.ctg_id===1?[StyleModalEdit.fontStyle,{fontWeight:'normal'}]:[StyleModalEdit.fontStyle,{fontWeight:'normal',color:currentColorMain2}]}>{ocrInfoInterfaz.ctg_id===2?'XX:XX:XX':ocrInfoInterfaz.finish_operation}</Text>
+                </View>
+            </View>
+            <View style={StyleModalEdit.containerField}>
+                <View style={StyleModalEdit.titleFieldContainer}>
+                    <Text style={StyleModalEdit.fontStyle}>OP</Text>
+                </View>
+                <View style={StyleModalEdit.contentFieldContainer}>
+                    <Text style={[StyleModalEdit.fontStyle,{fontWeight:'normal'}]}>{ocrInfoInterfaz.op}</Text>
+                </View>
+                <View style={StyleModalEdit.titleFieldContainer}>
+                    <Text style={StyleModalEdit.fontStyle}>REFERENCIA</Text>
+                </View>
+                <View style={StyleModalEdit.contentFieldContainer}>
+                    <Text style={[StyleModalEdit.fontStyle,{fontWeight:'normal'}]}>{ocrInfoInterfaz.ref}</Text>
+                </View>
+            </View>
+            <View style={StyleModalEdit.containerField}>
+                <View style={StyleModalEdit.titleFieldContainer}>
+                    <Text style={StyleModalEdit.fontStyle}>MODULO</Text>
+                </View>
+                <View style={StyleModalEdit.contentFieldContainer}>
+                    <Text style={[StyleModalEdit.fontStyle,{fontWeight:'normal'}]}>{ocrInfoInterfaz.mdl_id}</Text>
+                </View>
+                <View style={StyleModalEdit.titleFieldContainer}>
+                    <Text style={StyleModalEdit.fontStyle}>ANORM</Text>
+                </View>
+                <View style={StyleModalEdit.contentFieldContainer}>
+                    <Text style={[StyleModalEdit.fontStyle,{fontWeight:'normal'}]}>{ocrInfoInterfaz.anomaly_label===null?'Sin novedad':ocrInfoInterfaz.anomaly_label.slice(0,15)}</Text>
+                </View>
+            </View>
+            <View style={StyleModalEdit.containerField}>
+                <View style={StyleModalEdit.titleFieldContainer}>
+                    <Text style={StyleModalEdit.fontStyle}>COLOR</Text>
+                </View>
+                <View style={StyleModalEdit.contentFieldContainer}>
+                    <Text style={[StyleModalEdit.fontStyle,{fontWeight:'normal'}]}>{ocrInfoInterfaz.color_label}</Text>
+                </View>
+                <View style={StyleModalEdit.titleFieldContainer}>
+                    <Text style={StyleModalEdit.fontStyle}>EAN</Text>
+                </View>
+                <View style={StyleModalEdit.contentFieldContainer}>
+                    <Text style={[StyleModalEdit.fontStyle,{fontWeight:'normal'}]}>{ocrInfoInterfaz.ean_id}</Text>
+                </View>
+            </View>
+            <View style={StyleModalEdit.containerField}>
+                <View style={StyleModalEdit.titleFieldContainer}>
+                    <Text style={StyleModalEdit.fontStyle}>TALLA</Text>
+                </View>
+                <View style={StyleModalEdit.contentFieldContainer}>
+                    <Text style={[StyleModalEdit.fontStyle,{fontWeight:'normal'}]}>{ocrInfoInterfaz.talla_id}</Text>
+                </View>
+                <View style={StyleModalEdit.titleFieldContainer}>
+                    <Text style={StyleModalEdit.fontStyle}>UNIDADES</Text>
+                </View>
+                <View style={StyleModalEdit.contentFieldContainer}>
+                    <Text style={[StyleModalEdit.fontStyle,{fontWeight:'normal'}]}>{ocrInfoInterfaz.units_cant}</Text>
+                </View>
+            </View>
+            <View style={StyleModalEdit.containerInput}>  
+                {
+                    statusResponse?<ActivityIndicator size="large"/>:ocrInfoInterfaz.check_in_by===null && !reviseState?
+                    <>
+                    <TouchableOpacity 
+                    style={StyleModalEdit.buttonEdit}
+                    onPress={()=>{}}>
+                        <Text style={{fontSize:width*0.03,fontWeight:'bold',color:"#FFF"}}>ANOTACIONES</Text>
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity 
+                    style={StyleModalEdit.buttonEdit}
+                    onPress={hanlerReviseButtom}>
+                        <Text style={{fontSize:width*0.03,fontWeight:'bold',color:'#FFF'}}>REVISAR</Text>
+                    </TouchableOpacity>
+                    </>:  
+                    <View style={StyleModalEdit.fieldEdit}>
+                            <Text style={{fontSize:width*0.03,fontWeight:'bold',color:'#FFF'}}>REVISADO</Text>
+                    </View>
+                }
+            </View>
+            
+
+            <View style={StyleModalEdit.actionContainer}>
+
+                <TouchableOpacity 
+                style={[StyleModalEdit.buttons,{backgroundColor:currentColorMain1}]}
+                onPress={()=>{setModalCheckInUnits(false)}}>
+                    <Text style={{fontSize:width*0.03,fontWeight:'bold',color:currentColorMain}}>CERRAR</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+</View>
     )
 }
-const currentColorMain='#44329C';   //azul oscuro
+const currentColorMain='#44329C';
 const currentColorMain1='#C7CCEC';  //Azul claro
+const currentColorMain3='#44329ca5';//Azul claro intermedio
 const currentColorMain2='#e8e8e8';  //gris muy claro
 const currentColorMain4='#717171';  //color de letra resaltado
 
@@ -87,95 +219,170 @@ const StyleModalEdit=StyleSheet.create({
         position:'absolute',
         width,
         height,
-        backgroundColor:'#00000099',
+        backgroundColor:'#00000089',
         justifyContent:'center',
         alignItems:'center'
     },
     boxMesagge:{
         width:'95%',
-        height:'40%',
-        top:'-5%',
+        height:'65%',
         backgroundColor:'#FFF',
         borderRadius:height*0.01,
-        justifyContent:'center'
+        justifyContent:'center',
+        alignItems:'center',
     },
     titleContainer:{
-        width:'100%',
-        height:'15%',
+        width:'94%',
+        margin:'5%',
+        height:'20%',
         justifyContent:'center',
-        alignItems:'center'
+        borderRadius:height*0.01,
+        alignItems:'center',
+        backgroundColor:currentColorMain1,
+        flexDirection:'row'
+
     },
-    contentContainer:{
+    containerInput:{
+        height:'15%',
         width:'100%',
-        height:'25%',
         flexDirection:'row',
         alignItems:'center',
         justifyContent:'center',
+        // backgroundColor:'aqua',
+        marginTop:'3%'
     },
-    fame:{
-        width:'94%',
-        height:'45%',
-        alignSelf:'center',
-        alignItems:'center',
-        justifyContent:'space-around',
-        backgroundColor:'aqua',
-        flexDirection:'row'
-    },
-    frameColumna:{
-        height:'100%',
-        width:'48%',
-        borderWidth:height*0.001,
-        borderColor:'#CCC',
-        justifyContent:'flex-start',
-        padding:'0.5%'
-    },
+   
     actionContainer:{
         width:'100%',
-        height:'20%',
-        alignItems:'center',
+        height:'15%',
+        // backgroundColor:'aqua',
+        // alignItems:'center',
         justifyContent:'center',
-        flexDirection:'row'
+        flexDirection:'row',
+        // marginTop:'5%'
     },
     buttons:{
-        width:'40%',
-        height:'60%',
-        justifyContent:'center',
-        alignItems:'center',
-        marginRight:height*0.005
-    },
-    fieldContainer:{
-        width:'23%',
-        height:'80%',
-        margin:height*0.001,
-        borderWidth:height*0.002,
-        borderColor:currentColorMain2
-
-    },
-    fieldContainerButton:{
-        width:'23%',
-        height:'42%',
-        alignSelf:'flex-end',
-        marginBottom:'1.5%',
-        margin:height*0.001,
-        justifyContent:'center',
-        alignItems:'center',
-        backgroundColor:currentColorMain1,
-        borderRadius:height*0.005,
-
-
-    },
-    subtitlesContainer:{
-        width:'100%',
+        width:'94%',
         height:'50%',
         justifyContent:'center',
         alignItems:'center',
-        borderBottomColor:currentColorMain2,
-        borderBottomWidth:height*0.002
+        // marginRight:height*0.005
+    },
+    containerField:{
+        marginTop:height*0.0025,
+        flexDirection:'row',
+        height:'7.5%',
+        alignItems:'center',
+        alignSelf:'center'
+    },
+    fontStyle:{
+        fontSize:width*0.026,
+        fontWeight:'bold',
+        color:currentColorMain4
+    },
+    titleFieldContainer:{
+        height:'100%',
+        width:'20%',
+        justifyContent:'center',
+        paddingLeft:'2%',
+        // backgroundColor:currentColorMain2,
+        // marginLeft:'3%',
+        borderWidth:height*0.002,
+        borderColor:currentColorMain2
         
     },
-    subtitle:{
-        color:currentColorMain4,
+    contentInputContainer:{
+        // marginTop:height*0.0025,
+        flexDirection:'row',
+        height:'50%',
+        width:'47%',
+        alignItems:'center',
+        // marginLeft:'3%',
+        backgroundColor:'#FFF',
+        borderWidth:height*0.002,
+        borderColor:currentColorMain2,
+        // alignSelf:'center',
+        justifyContent:'center'
+    },
+    titleEanContainer:{
+        height:'50%',
+        // marginTop:'2%',
+        backgroundColor:'#FFF',
+        width:'47%',
+        justifyContent:'center',
+        alignItems:'center',
+        paddingLeft:'5%',
+        marginLeft:'3%',
+        borderWidth:height*0.002,
+        borderColor:currentColorMain2
+        
+    },
+    contentFieldContainer:{
+        height:'100%',
+        width:'27%',
+        justifyContent:'center',
+        borderWidth:height*0.002,
+        alignItems:'center',
+        borderColor:currentColorMain2
+        
+    },
+    iconContainer:{
+        justifyContent:'center',
+        // alignItems:'center',
+        // backgroundColor:'aqua',
+        height:'100%',
+        width:'15%'
+    },
+    column:{
+        width:'38%',
+        height:'100%',
+    },
+
+    row:{
+        width:'100%',
+        height:'33%',
+        flexDirection:'row'
+    },
+    tittleContainer:{
+        width:'45%',
+        height:'100%',
+        justifyContent:'center',
+        // marginLeft:'10%'
+        // alignItems:'center',
+        // backgroundColor:'aqua'
+    },
+    contentContainer:{
+        width:'55%',
+        height:'100%',
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    title:{
+        fontSize:height*0.015,
         fontWeight:'bold',
-        fontSize:width*0.02
+        color:currentColorMain
+    },
+    content:{
+        fontSize:height*0.015,
+        // fontWeight:'bold',
+        color:currentColorMain3
+
+    },
+    buttonEdit:{
+        backgroundColor:currentColorMain,
+        width:'47%',
+        height:'50%',
+        margin:'0.5%',
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    fieldEdit:{
+        backgroundColor:currentColorMain1,
+        width:'94%',
+        height:'50%',
+        margin:'0.5%',
+        justifyContent:'center',
+        alignItems:'center'
     }
+
 })

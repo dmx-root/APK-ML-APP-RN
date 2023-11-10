@@ -1,16 +1,16 @@
+import { FlatList,TouchableWithoutFeedback}                         from 'react-native';
+import { StyleSheet, View, Dimensions,Text}                         from 'react-native';
 import { ModuloComponentAdmin }                                     from '../../components/adminVersion/moduloComponentAdmin';
 import { useAdminContext }                                          from '../../context/adminContext';
-import { FlatList,TouchableWithoutFeedback}                         from 'react-native';
-import { StyleSheet, View, Dimensions,Text}                             from 'react-native';
 import { QueryDataModulo }                                          from '../../api/apiConsults'
-import { useMainContex } from '../../context/mainContext';
-import { ModuloInformationComponentAdmin } from '../../components/adminVersion/moduloInformationComponentAdmin';
-import { ModuloIconList2 } from '../../view/iconosSvg';
+import { useMainContex }                                            from '../../context/mainContext';
+import { ModuloInformationComponentAdmin }                          from '../../components/adminVersion/moduloInformationComponentAdmin';
+import { ModuloIconList2 }                                          from '../../view/iconosSvg';
 
 const {width,height}=Dimensions.get('window');
 const currentColorMain4='#e1e1e1';  //color de letra resaltado
 
-export function ModalAllOcrList(){
+export function ModalModulosOcrListAdmin(){
 
     // const {modulosList,setModalModulosInformation}=useAdminContext();
     

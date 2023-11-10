@@ -9,6 +9,7 @@ import { QueryDataUsers }                                               from '..
 import {OPcomponent}                                                    from '../../components/opComponent'
 import {OcrComponent}                                                   from '../../components/plantaVersion/ocrComponentPlanta'
 import { MenuIcon, PlusCirc, SearchIcon}                                from '../iconosSvg';
+import { OPcomponentAdmin } from '../../components/adminVersion/opComponentAdmin';
 // import { OPcomponent }                                               from '../components/opComponent.jsx';
 // import { OcrComponent }                                              from '../components/plantaVersion/ocrComponentPlanta.jsx';
 // import { useMainContex }                                             from '../context/mainContext.jsx';
@@ -115,7 +116,13 @@ export function MainInterfazAdmin({navigation}){
                 <View style={StyleMainWindow.root1}>
                     <View style={StyleMainWindow.frame1}>
                         
-                        {loading?<LoadingComponent message={'Cargando lista de OP...'}/>:opList.length===0?<EmptyInterfaz data={"Una vez se empiece a generar registros prodrá visualizar la información de las OP's aquí"}/>:<FlatList renderItem={item=><OPcomponent data={item} />} data={opList}/>}
+                        {loading?
+                        <LoadingComponent message={'Cargando lista de OP...'}/>:
+                        opList.length===0?
+                        <EmptyInterfaz data={"Una vez se empiece a generar registros prodrá visualizar la información de las OP's aquí"}/>:
+                        <FlatList renderItem={item=><OPcomponentAdmin data={item} />} data={opList}/>}
+                        {/* <OPcomponentAdmin/> */}
+
                     </View>
                 </View>
                 <View style={StyleMainWindow.root2}>

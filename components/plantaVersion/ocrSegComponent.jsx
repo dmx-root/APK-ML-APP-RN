@@ -31,7 +31,7 @@ export function OcrSegComponent({data,modulo}){
                         <Text style={StyleInfoViewOcr.labelTitle}>CANT:</Text>
                     </View>
                     <View style={StyleInfoViewOcr.fieldContainerData}>
-                        <Text style={StyleInfoViewOcr.fieldontent}>{data.cantidadUnidades}</Text>
+                        <Text style={StyleInfoViewOcr.fieldontent}>{data.unitsCant}</Text>
                     </View>
                 </View>
                 <View style={StyleInfoViewOcr.rowContente}>
@@ -47,7 +47,7 @@ export function OcrSegComponent({data,modulo}){
                         <Text style={StyleInfoViewOcr.labelTitle}>TALLA</Text>
                     </View>
                     <View style={StyleInfoViewOcr.fieldContainerData}>
-                        <Text style={StyleInfoViewOcr.fieldontent}>{data.tallaLabel}</Text>
+                        <Text style={StyleInfoViewOcr.fieldontent}>{data.tallaId}</Text>
                     </View>
                 </View>
                 <View style={StyleInfoViewOcr.rowContente}>

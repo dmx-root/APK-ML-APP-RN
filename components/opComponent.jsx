@@ -15,6 +15,7 @@ export function OPcomponent({data}){
     const handlerTouch=()=>{
         SetModalSpecificationOP(true);
         setOpInfoInterfaz(data.item);
+        
     }
 
     return(

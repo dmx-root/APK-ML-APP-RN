@@ -3,7 +3,6 @@ import { Aside }                      from '../components/plantaVersion/aside.js
 import { MainInterfaz }               from './mainInterfaz.jsx';
 import { ModalCreateOcr }             from '../modals/plantaVersion/modalCreateOcr.jsx';
 import { ModalSpecificationsOp }      from './modalSpecificationsOp.jsx';
-import { ModalOcrList }               from './modalOcrList.jsx';
 import { ModalOcrInfo }               from '../modals/plantaVersion/modalOcrInfo.jsx';
 import { Alert, Modal }               from 'react-native';
 import { ModalCreateOcrCurrent }      from './plantaVersion/modalCreateOcrCurrent.jsx';
@@ -11,15 +10,16 @@ import { useMainContex }              from '../context/mainContext.jsx';
 import { ModalRegisterSegProducts }   from '../components/plantaVersion/modalRegisterSegProducts.jsx';
 import { ModalRegisterSegInformation }from './plantaVersion/modalRegisterSegInformation.jsx';
 import { ModalOcrInfoSeg }            from './modalOcrInfoSeg.jsx';
-import { ModalModulosList }           from '../modals/facturacionVersion/modalModulosList.jsx';
+import { ModalOcrListPlanta }         from './plantaVersion/modalOcrListPlanta.jsx';
+import { ModalRegisterEmployeesPlanta } from '../modals/plantaVersion/modalRegisterEmployeesPlanta.jsx';
 
 export function MainViewContainer({navigation}){
     
     const {modalCreateOcrState, asideState}=usePlantaContext();
 
     const {modalValidationOcr,setModalValidationOcr,setModalCreateOcrState,
-      setCurrentOcr,currentOcr,setCurrentOp, AsyncStorageManagement,modalRegisterSegundas,
-      modalRegisterInfoSegundas,modalComponentSeg}=usePlantaContext();
+            setCurrentOcr,currentOcr,setCurrentOp, AsyncStorageManagement,modalRegisterSegundas,
+            modalRegisterInfoSegundas,modalComponentSeg}=usePlantaContext();
 
     const {modalOcrInfo, modalSpecificationOP,modalOcrList}=useMainContex();
 
@@ -94,7 +94,7 @@ export function MainViewContainer({navigation}){
               animationType="fade"
               transparent={true}
               visible={modalOcrList}>
-                <ModalOcrList/>
+                <ModalOcrListPlanta/>
             </Modal>           
             <Modal
               animationType="fade"
@@ -130,6 +130,12 @@ export function MainViewContainer({navigation}){
               visible={modalComponentSeg}>
                 <ModalOcrInfoSeg/>
             </Modal>
+            {/* <Modal
+              animationType="fade"
+              transparent={true}
+              visible={true}>
+                <ModalRegisterEmployeesPlanta/>
+            </Modal> */}
         </>
     )
 }

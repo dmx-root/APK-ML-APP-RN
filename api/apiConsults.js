@@ -141,6 +141,17 @@ export class QueryDataOCR{
         }
         return await axios(config);
     }
+    async checkInOcr(data){
+        const config={
+            method:'put',
+            url:this.uri+this.path,
+            headers:{
+                "access-token-auth":this.userToken
+            },
+            data
+        }
+        return await axios(config);
+    }
 }
 export class QueryDataModulo{
     constructor(uri,path,userToken){

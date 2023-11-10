@@ -12,8 +12,20 @@ const currentColorMain4='#e1e1e1';  //color de letra resaltado
 export function ModuloComponent({data}){
     // console.log(data)
     const {setModalModulosOcrList} = useFacturacionContext();
+    const {setModuloInfoInterfaz}=useMainContex();
+
+    const handlerTouchComponente=()=>{
+        setModalModulosOcrList(true);
+        setModuloInfoInterfaz({
+            moduloLabel:data.item.mdl_label,
+            moduloId:data.item.mdl_id,
+            noEmployees:data.item.number_employees,
+
+        });
+    }
+
     return(
-        <TouchableOpacity style={StyleInfoViewOcr.header1} onPress={()=>{setModalModulosOcrList(true)}}>
+        <TouchableOpacity style={StyleInfoViewOcr.header1} onPress={handlerTouchComponente}>
             <View style={StyleInfoViewOcr.iconContainer}>
                 <ModuloIconList/>
             </View>

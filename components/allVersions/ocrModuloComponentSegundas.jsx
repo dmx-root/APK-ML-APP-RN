@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native';
 import {CheckBoxEmpty, CheckBoxFill, OCRIcon } from '../../view/iconosSvg.jsx';
 import { useMainContex } from '../../context/mainContext.jsx';
+import { useFacturacionContext } from '../../context/facturacionContext.jsx';
 
 const {width,height}=Dimensions.get('window');
 
@@ -9,9 +10,16 @@ const currentColorMain4='#e1e1e1';  //color de letra resaltado
 
 export function OcrModuloComponentSegundas({data}){
     
-    // console.log(data.item)
+    const {setModalCheckInUnits}= useFacturacionContext();
+    const {setOcrInfoInterfaz}=useMainContex();
+
+    const handlerTouchComponent=()=>{
+        setModalCheckInUnits(true);
+        setOcrInfoInterfaz(data.item);
+    }
+
     return(
-        <TouchableOpacity style={StyleInfoViewOcr.header1} onPress={()=>{}}>
+        <TouchableOpacity style={StyleInfoViewOcr.header1} onPress={handlerTouchComponent}>
             <View style={StyleInfoViewOcr.iconContainer}>
                 <OCRIcon data={{color:'#44329C',size:width*0.08,}}/>
             </View>

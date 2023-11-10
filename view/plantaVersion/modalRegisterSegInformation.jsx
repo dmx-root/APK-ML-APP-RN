@@ -26,7 +26,8 @@ export function ModalRegisterSegInformation({navigation}){
     async function loadOpInformation(op){
         try {
             const response=await ApiQueryOp.getOpCompleted(op);
-            if(response.data.statusResponse===1){
+            console.log(response.data)
+            if(response.data.statusCodeApi===1){
                 setLoading(false);
                 setRegisterInfoSegundas(false);
                 setRegisterSegundas(true);

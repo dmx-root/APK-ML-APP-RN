@@ -16,7 +16,7 @@ const currentColorMain4='#e1e1e1';  //color de letra resaltado
 export function ModalAllOcrList(){
 
     const {mainView,setMainView,userToken,setCurrentUser,DNS}=useMainContex();
-    const {setModalAllOcrList}=useFacturacionContext();
+    const {setModalAllOcrList,idElementRevise,setIdElementRevise}=useFacturacionContext();
 
     const [ocrList,setOcrList]=useState([]);
     const [loading, setLoading]=useState(true);
@@ -28,6 +28,18 @@ export function ModalAllOcrList(){
     useEffect(()=>{
         loadInformation();
     },[]);
+    useEffect(()=>{
+        if(idElementRevise){
+            const alterArray=ocrList.map(element=>{
+                if(element.ocr_id==idElementRevise){
+                    element.prc_state=1;
+                    return element
+                }
+                return element
+            });
+            setOcrList(alterArray);
+        }
+    },[idElementRevise]);
 
     async function loadInformation(){
         const ApiQueryOcr= new QueryDataOCR(DNS,'/api/ml/ocr/getAll/',userToken);
@@ -107,8 +119,14 @@ export function ModalAllOcrList(){
                         </View>
                         <View style={StyleInfoViewOP.root}>
 
-                            {loading?<LoadingComponent message={'Cargando lista de OCR'}/>:ocrList.length===0?<EmptyInterfaz data={'No se han ingresado elemeentos en el módulo'}/>:<FlatList style={StyleInfoViewOP.flatList} renderItem={item=>
-                            item.item.ctg_id===1?<OcrModuloComponent data={item}/>:<OcrModuloComponentSegundas data={item}></OcrModuloComponentSegundas>} data={ocrList} key={element=>element.mdl_id}/>}
+                            {loading?
+                            <LoadingComponent message={'Cargando lista de OCR'}/>:
+                            ocrList.length===0?
+                            <EmptyInterfaz data={'No se han ingresado elemeentos en el módulo'}/>:
+                            <FlatList style={StyleInfoViewOP.flatList} renderItem={item=>item.item.ctg_id===1?
+                            <OcrModuloComponent data={item}/>:
+                            <OcrModuloComponentSegundas data={item}/>} data={ocrList} key={element=>element.mdl_id}/>
+                            }
 
                         </View>         
                     </View>

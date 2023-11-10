@@ -1,3 +1,4 @@
+import { Modal }                        from "react-native";
 import { useFacturacionContext }        from "../../context/facturacionContext";
 import { useMainContex }                from "../../context/mainContext";
 import { ModalModulosList }             from "../../modals/facturacionVersion/modalModulosList";
@@ -6,14 +7,13 @@ import { ModalOcrInfo }                 from "../../modals/plantaVersion/modalOc
 import { ModalSpecificationsOp }        from "../modalSpecificationsOp";
 import { ModalOcrList }                 from "../modalOcrList";
 import { MainInterfazFacturacion }      from "./mainInterfazFacturacion";
-import { Modal }                        from "react-native";
 import { AsideFacturacion }             from "../../modals/facturacionVersion/asideFacturacion";
-import { ModalAllOcrList } from "../../modals/facturacionVersion/modalAllOcrList";
+import { ModalAllOcrList }              from "../../modals/facturacionVersion/modalAllOcrList";
 import { ModalCheckInUnidadesFacturacion } from "../../modals/facturacionVersion/modalCheckInUnidadesFacturacion";
 
 export function MainViewContainerFacturacion({navigation}){
     
-    const {asideState,modalModulosList,modalModulosOcrList,modalAllOcrList }=useFacturacionContext();
+    const {asideState,modalModulosList,modalModulosOcrList,modalAllOcrList,modalCheckInUnits }=useFacturacionContext();
     const { modalOcrInfo, modalSpecificationOP, modalOcrList }=useMainContex();
     
     return(
@@ -65,7 +65,7 @@ export function MainViewContainerFacturacion({navigation}){
              <Modal
               animationType="fade"
               transparent={true}
-              visible={true}>
+              visible={modalCheckInUnits}>
                 <ModalCheckInUnidadesFacturacion/>
             </Modal>
 

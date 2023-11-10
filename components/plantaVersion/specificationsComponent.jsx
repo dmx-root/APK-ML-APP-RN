@@ -39,7 +39,7 @@ export function SpecificationsComponent({data}){
                         <Text style={StyleInfoViewOcr.labelTitle}>TALLA:</Text>
                     </View>
                     <View style={StyleInfoViewOcr.fieldContainer}>
-                        <Text style={StyleInfoViewOcr.fieldontent}>{data.item.tll_label}</Text>
+                        <Text style={StyleInfoViewOcr.fieldontent}>{data.item.tll_id}</Text>
                     </View>
                 </View>
                 <View style={StyleInfoViewOcr.rowContente}>

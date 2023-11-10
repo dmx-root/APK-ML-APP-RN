@@ -31,7 +31,7 @@ export function ModalSpecificationsOp(){
             const response=await ApiQueryOp.getAllSpecificationOp(opInfoInterfaz.op);
             setSpeOp(response.data.data);
             setLoading(false);
-            // console.log(response.data)
+            console.log(response.data.data)
         } catch (error) {
             console.log(error);
             Alert.alert('Error de servidor','Hubo un error a la hora de cargar la información, intentelo más tarde');

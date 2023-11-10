@@ -34,6 +34,7 @@ export function MainContextProvider({children}){
     const [opInfoInterfaz,setOpInfoInterfaz]=useState({});
     const [opSpeInfoInterfaz,setOpSpeInfoInterfaz]=useState({});
     const [ocrInfoInterfaz,setOcrInfoInterfaz]=useState({});
+    const [moduloInfoInterfaz,setModuloInfoInterfaz]=useState({});
 
     const [modalOcrInfo,setModalOcrInfo]=useState(false);
     const [modalSpecificationOP,SetModalSpecificationOP]=useState(false);
@@ -51,6 +52,7 @@ export function MainContextProvider({children}){
         modalOcrInfo,setModalOcrInfo,
         modalSpecificationOP,SetModalSpecificationOP,
         modalOcrList,setModalOcrList,
+        moduloInfoInterfaz,setModuloInfoInterfaz,
 
         newUser,setNewUser,
         modalInput,setModalInput,
