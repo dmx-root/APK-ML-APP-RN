@@ -11,10 +11,9 @@ const {width,height}=Dimensions.get('window');
 const currentColorMain='#44329C';   //azul oscuro
 
 export function Aside({navigation}){
-    const {setCurrentUser, setUserToken,setMainView,
-        loginUser,setloginUser}=useMainContex();
 
-    const { asideState,setAsideState,setRegisterInfoSegundas}=usePlantaContext();
+    const {setCurrentUser, setUserToken,setMainView,setloginUser}=useMainContex();
+    const { setAsideState,setRegisterInfoSegundas,setRegisterModulo}=usePlantaContext();
 
     const[loading,setLoading]=useState(false);
     const removeData = async () => {
@@ -41,12 +40,16 @@ export function Aside({navigation}){
         setAsideState(false);
         navigation.navigate('ProfileInterface');
     }
-    handlerTouchButtonExit=()=>{
+    const handlerTouchButtonExit=()=>{
         setAsideState(false);
         Alert.alert('¿Salir de la cuenta?','',[
             {text: 'OK', onPress:handlerCloseSesion, style: 'cancel'},
             {text: 'CANCEL'},
             ]);
+    }
+    const handlerSetModalEmplee=()=>{
+        setRegisterModulo(true);
+        setAsideState(false);
     }
     const handlerSetSegProducts=()=>{
         setAsideState(false);
@@ -77,7 +80,7 @@ export function Aside({navigation}){
                                     <Text style={StyleAside.contentOptions}>NUEVA OCR</Text>
                                 </View>
                             </TouchableOpacity>
-                            <TouchableOpacity style={StyleAside.fieldOptionContainer} onPress={()=>{}}>
+                            <TouchableOpacity style={StyleAside.fieldOptionContainer} onPress={handlerSetModalEmplee}>
                                 <View style={StyleAside.iconOptionContainer}>
                                     <UserPlus/>
                                 </View>

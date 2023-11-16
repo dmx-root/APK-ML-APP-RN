@@ -236,6 +236,25 @@ export function User2(props) {
     </Svg>
   )
 }
+export function User3(props) {
+  return (
+    <Svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={height*0.03}
+      height={height*0.03}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#AAA"
+      strokeWidth={3}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="feather feather-user"
+    >
+      <Path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+      <Circle cx={12} cy={7} r={4} />
+    </Svg>
+  )
+}
 
 export function LogOut(props) {
   return (

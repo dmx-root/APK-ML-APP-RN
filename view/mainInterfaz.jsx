@@ -45,13 +45,16 @@ export function MainInterfaz({navigation}){
     async function loadInformation(UserDocumentId){
         try {
             const response3=await ApiQueryUser.getSesion(UserDocumentId);
-            console.log(response3.data.data.opList);
-            setLoading(false);
-            setOpList(response3.data.data.opList);
-            setFilterOp(response3.data.data.opList);
-            setOcrList(response3.data.data.ocrList.slice(0,4));
-            setEventosImproductivos(response3.data.data.anomalyList);
-            setModulosList(response3.data.data.moduloList);
+            // console.log(response3.data.data.opList);
+            if(response3.data.statusCodeApi===1){
+                setLoading(false);
+                setOpList(response3.data.data.opList);
+                setFilterOp(response3.data.data.opList);
+                setOcrList(response3.data.data.ocrList.slice(0,4));
+                setEventosImproductivos(response3.data.data.anomalyList);
+                setModulosList(response3.data.data.moduloList);
+            }
+            if(response3.data.statusCodeApi===0) Alert.alert('Error de servidor',response3.data.data.statusMessageApi)
 
             // setLoading(false);
 

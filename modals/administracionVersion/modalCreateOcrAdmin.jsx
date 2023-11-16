@@ -43,26 +43,34 @@ export function ModalCreateOcrAdmin({navigation}){
         try {
             const response=await ApiQueryOp.openOp(data);
             console.log(response.data)
-            setDetalletOpList(response.data.data);
 
-            currentOcr.moduloId=newModulo;
-            currentOcr.startTime=new Date().toLocaleTimeString();
-            currentOcr.dete=new Date().toDateString();
+            if(response.data.statusCodeApi===1){
+                setDetalletOpList(response.data.data);
+                currentOcr.moduloId=newModulo;
+                currentOcr.startTime=new Date().toLocaleTimeString();
+                currentOcr.dete=new Date().toDateString();
+                setCurrentOcr(currentOcr);
+                const newOp={ 
+                    op:response.data.data[0].op,
+                    reference:response.data.data[0].ref,
+                    cantOcr:response.data.data[0].cant_ocr,
+                    cantPlanned:response.data.data[0].cant_planned_op,
+                    cantCompleted:response.data.data[0].cant_completed_op,
+                };
+                setCurrentOp(newOp);
+                setModalCreateOcrState(false);
+                setLoading(false);
+                // navigation.navigate('RegisterInterfaz');
+            }
+            else if(response.data.statusCodeApi===0){
+                setLoading(false);
+                Alert.alert('Error de consulta',response.data.statusMessageApi);
+            }
+            else if(response.data.statusCodeApi===-1){
+                setLoading(false);
+                Alert.alert('Error de inserción',response.data.statusMessageApi);
+            }
 
-            setCurrentOcr(currentOcr);
-
-            const newOp={ 
-                op:response.data.data[0].op,
-                reference:response.data.data[0].ref,
-                cantOcr:response.data.data[0].cant_ocr,
-                cantPlanned:response.data.data[0].cant_planned_op,
-                cantCompleted:response.data.data[0].cant_completed_op,
-            };
-
-            setCurrentOp(newOp);
-            setModalCreateOcrState(false);
-            setLoading(false);
-            // navigation.navigate('RegisterInterfaz');
             
         } catch (error) {
             console.log(error);

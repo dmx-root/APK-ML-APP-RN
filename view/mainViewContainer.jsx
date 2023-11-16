@@ -7,11 +7,13 @@ import { ModalOcrInfo }               from '../modals/plantaVersion/modalOcrInfo
 import { Alert, Modal }               from 'react-native';
 import { ModalCreateOcrCurrent }      from './plantaVersion/modalCreateOcrCurrent.jsx';
 import { useMainContex }              from '../context/mainContext.jsx';
-import { ModalRegisterSegProducts }   from '../components/plantaVersion/modalRegisterSegProducts.jsx';
-import { ModalRegisterSegInformation }from './plantaVersion/modalRegisterSegInformation.jsx';
+import { ModalRegisterSegProductsPlanta }   from '../modals/plantaVersion/modalRegisterSegProducts.jsx';
+import { ModalRegisterSegInformation }from '../modals/plantaVersion/modalRegisterSegInformation.jsx';
 import { ModalOcrInfoSeg }            from './modalOcrInfoSeg.jsx';
 import { ModalOcrListPlanta }         from './plantaVersion/modalOcrListPlanta.jsx';
 import { ModalRegisterEmployeesPlanta } from '../modals/plantaVersion/modalRegisterEmployeesPlanta.jsx';
+import { ModalModuloInformationAdmin } from '../modals/administracionVersion/modalModuloInformation.jsx';
+import { ModalModuloRegister } from '../modals/plantaVersion/modalModuloRegister.jsx';
 
 export function MainViewContainer({navigation}){
     
@@ -19,7 +21,8 @@ export function MainViewContainer({navigation}){
 
     const {modalValidationOcr,setModalValidationOcr,setModalCreateOcrState,
             setCurrentOcr,currentOcr,setCurrentOp, AsyncStorageManagement,modalRegisterSegundas,
-            modalRegisterInfoSegundas,modalComponentSeg}=usePlantaContext();
+            modalRegisterInfoSegundas,modalComponentSeg,modalRegisterEmployees,
+            modalRegisterModulo}=usePlantaContext();
 
     const {modalOcrInfo, modalSpecificationOP,modalOcrList}=useMainContex();
 
@@ -106,7 +109,7 @@ export function MainViewContainer({navigation}){
               animationType="fade"
               transparent={true}
               visible={modalRegisterSegundas}>
-                <ModalRegisterSegProducts/>
+                <ModalRegisterSegProductsPlanta/>
             </Modal> 
             
             <Modal
@@ -130,12 +133,18 @@ export function MainViewContainer({navigation}){
               visible={modalComponentSeg}>
                 <ModalOcrInfoSeg/>
             </Modal>
-            {/* <Modal
+            <Modal
               animationType="fade"
               transparent={true}
-              visible={true}>
+              visible={modalRegisterEmployees}>
                 <ModalRegisterEmployeesPlanta/>
-            </Modal> */}
+            </Modal>
+            <Modal
+              animationType="fade"
+              transparent={true}
+              visible={modalRegisterModulo}>
+                <ModalModuloRegister/>
+            </Modal>
         </>
     )
 }

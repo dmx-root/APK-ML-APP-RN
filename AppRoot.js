@@ -23,11 +23,12 @@ export function AppRoot() {
     },[]);
   
     const handlerAccessSesion=(response)=>{
+
         setCurrentUser(response.data.data);
         setUserToken(response.data.token);
         setMainView(response.data.data.profile_id);
-        setLoading(false)
-    // setLoading(false);
+        setLoading(false);
+
     }
     async function getDataUser(data){
         const ApiQueryUsers=new QueryDataUsers(DNS,'/api/ml/auth/login/',data.userTokenId);
@@ -35,7 +36,7 @@ export function AppRoot() {
             const response1=await ApiQueryUsers.getData(data);
             if(response1.data.statusResponse===1){
                 handlerAccessSesion(response1);
-                console.log(response1.data);
+                console.log(response1.data.data);
             }
             if(response1.data.statusResponse===0) Alert.alert('Datos erroneos',response1.data.message);
         } catch (error) {
@@ -45,7 +46,6 @@ export function AppRoot() {
     }
     async function loadInformation(){
         const userTokenId=await AsyncStorage.getItem('user-token-id');
-        console.log(userTokenId)
         if(userTokenId){
             setUserToken(userTokenId);
             getDataUser({
@@ -58,6 +58,7 @@ export function AppRoot() {
         }
     
     }
+
   if(loading){
     return(
         <Stack.Navigator>
@@ -84,7 +85,9 @@ export function AppRoot() {
         )}
         {mainView === 5 && (
             <Stack.Screen name="AppVersionInvitado"     component={AppVersionInvitado}      option={{headerShown:false}}/>
+            
         )}
+        
     </Stack.Navigator>
    
   );

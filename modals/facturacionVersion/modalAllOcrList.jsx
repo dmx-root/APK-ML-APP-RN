@@ -1,6 +1,6 @@
+import { useEffect, useState }                                              from 'react';
 import { Alert, FlatList,TouchableWithoutFeedback}                          from 'react-native';
 import { StyleSheet, View, Dimensions,Text}                                 from 'react-native';
-import { useEffect, useState }                                              from 'react';
 import { QueryDataOCR }                                                     from '../../api/apiConsults'
 import { useMainContex }                                                    from '../../context/mainContext';
 import { OCRIcon1 }                                                         from '../../view/iconosSvg';
@@ -8,7 +8,8 @@ import { LoadingComponent }                                                 from
 import { EmptyInterfaz }                                                    from '../../components/allVersions/emptyInterfaz';
 import { OcrModuloComponent }                                               from '../../components/facturacionVersion/ocrModuloComponent';
 import { useFacturacionContext }                                            from '../../context/facturacionContext';
-import { OcrModuloComponentSegundas } from '../../components/allVersions/ocrModuloComponentSegundas';
+import { OcrModuloComponentSegundas }                                       from '../../components/allVersions/ocrModuloComponentSegundas';
+import { Picker } from '@react-native-picker/picker';
 
 const {width,height}=Dimensions.get('window');
 const currentColorMain4='#e1e1e1';  //color de letra resaltado
@@ -19,11 +20,13 @@ export function ModalAllOcrList(){
     const {setModalAllOcrList,idElementRevise,setIdElementRevise}=useFacturacionContext();
 
     const [ocrList,setOcrList]=useState([]);
+    const [ocrListFilter,setOcrListFilter]=useState([]);
     const [loading, setLoading]=useState(true);
 
     const [ocrRev,setOcrRev]=useState(0);
     const [ocrNoRev,setOcrNoRev]=useState(0);
     const [ocrAnom,setOcrAnom]=useState(0);
+    const [filterValue,setFilterValue]=useState(0);
 
     useEffect(()=>{
         loadInformation();
@@ -40,27 +43,40 @@ export function ModalAllOcrList(){
             setOcrList(alterArray);
         }
     },[idElementRevise]);
+    useEffect(()=>{
+
+        const filterArray=ocrList.filter(element=>element.ctg_id===filterValue);
+        setOcrListFilter(filterArray);
+
+    },[filterValue]);
 
     async function loadInformation(){
         const ApiQueryOcr= new QueryDataOCR(DNS,'/api/ml/ocr/getAll/',userToken);
         try {
-            const response = await ApiQueryOcr.getAllOcr();
+            const response = await ApiQueryOcr.getAllOcr(0);
             if(response.data.statusCodeApi===1){
 
                 const resultRev=response.data.data.filter(element=>element.prc_state===1).length;
                 const resultNoRev=response.data.data.filter(element=>element.prc_state===null).length;
                 const resultAnom=response.data.data.filter(element=>element.anm_cod!==null).length;
 
+                setOcrList(response.data.data);
+                setOcrListFilter(response.data.data);
                 setOcrRev(resultRev);
                 setOcrNoRev(resultNoRev);
                 setOcrAnom(resultAnom);
-
-                console.log(resultNoRev)
-                   
+                setLoading(false);
+                
             }
-            setOcrList(response.data.data);
-            setLoading(false);
-            
+            else if(response.data.statusCodeApi===0){
+                setLoading(false);
+                Alert.alert('Error de consulta',response.data.statusMessageApi);
+            }  
+            else if(response.data.statusCodeApi===-1){
+                setLoading(false);
+                Alert.alert('Error de servidor',response.data.statusMessageApi);
+                
+            }          
         } catch (error) {
             console.log(error);
             Alert.alert('Error de servidor', 'Hubo un problema a la hora de intentar cargar los datos, inténtelo más tarde');
@@ -69,6 +85,7 @@ export function ModalAllOcrList(){
     
     return(
         <TouchableWithoutFeedback onPress={()=>{setModalAllOcrList(false)}}>
+            
             <View style={StyleInfoViewOP.windowContainer}>
                 <TouchableWithoutFeedback onPress={()=>{}}>
                     <View style={StyleInfoViewOP.window}>
@@ -118,10 +135,28 @@ export function ModalAllOcrList(){
                             
                         </View>
                         <View style={StyleInfoViewOP.root}>
+                            <View style={StyleInfoViewOP.filterContainer}>
+                                <View style={StyleInfoViewOP.filterContainerTittle}>
+                                   <Text
+                                   style={{
+                                    fontSize:height*0.018,
+                                    fontWeight:'bold',
+                                    color:'#777'
+                                   }}
+                                   >FILTRAR</Text> 
+                                </View>
+                                <View style={StyleInfoViewOP.filterContainerPicker}>
+                                    <Picker style={StyleInfoViewOP.input} selectedValue={filterValue} onValueChange={(itemValue, itemIndex) =>{setFilterValue(itemValue)}}>
+                                        <Picker.Item style={{alignSelf:'center',color:'#777',fontSize:width*0.03}} label='TODAS LAS OCR'                     value={0}/>
+                                        <Picker.Item style={{alignSelf:'center',color:'#777',fontSize:width*0.03}} label='REGISTROS DE PRIMERA CALIDAD'      value={1}/>
+                                        <Picker.Item style={{alignSelf:'center',color:'#777',fontSize:width*0.03}} label='REGISTROS DE SEGUNDA CALIDAD'      value={2}/>
+                                    </Picker>
+                                </View>
+                            </View>
 
                             {loading?
                             <LoadingComponent message={'Cargando lista de OCR'}/>:
-                            ocrList.length===0?
+                            ocrListFilter.length===0?
                             <EmptyInterfaz data={'No se han ingresado elemeentos en el módulo'}/>:
                             <FlatList style={StyleInfoViewOP.flatList} renderItem={item=>item.item.ctg_id===1?
                             <OcrModuloComponent data={item}/>:
@@ -227,5 +262,42 @@ const StyleInfoViewOP=StyleSheet.create({
         // fontWeight:'bold',
         color:'#999'
 
-    }
+    },
+    filterContainer:{
+        width:'100%',
+        height:'9%',
+        backgroundColor:currentColorMain4,
+        justifyContent:'center',
+        alignItems:'center',
+        flexDirection:'row'
+        
+    },
+    filterContainerTittle:{
+        height:'80%',
+        width:'35%',
+        // borderWidth:height*0.0015,
+        // borderColor:'#FFF',
+        // backgroundColor:'#FFF',
+        justifyContent:'center',
+        alignItems:'center',
+    },
+    filterContainerPicker:{
+        height:'100%',
+        width:'65%',
+        justifyContent:'center',
+        alignItems:'center',
+        margin:'2%'
+    },
+    input:{
+        width:'100%',
+        height:'70%',
+        borderRadius:height*0.003,
+        backgroundColor:'#FFF',
+        fontSize:width*0.03,
+        alignSelf:'center', 
+        color:'#777',
+        alignItems:'center',
+        justifyContent:'center',
+        textAlign:'center'
+    },
 })

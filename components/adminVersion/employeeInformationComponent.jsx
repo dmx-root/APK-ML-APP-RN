@@ -17,7 +17,7 @@ export function EmployeeInformationComponent({data,index}){
                 <Text style={StyleIncentivoComponent.title}>CODIGO</Text>
               </View>
               <View style={StyleIncentivoComponent.informationContainerField}>
-                <Text style={StyleIncentivoComponent.information}>332</Text>
+                <Text style={StyleIncentivoComponent.information}>{data.emp_code}</Text>
               </View>
             </View>
             <View style={StyleIncentivoComponent.componentContainerRow}>
@@ -43,7 +43,7 @@ export function EmployeeInformationComponent({data,index}){
 
 const StyleIncentivoComponent=StyleSheet.create({
   componentContainer:{
-    height:'19%',
+    height:'11.5%',
     width:'98%',
     borderColor:'#ccc',
     borderRadius:height*0.008,

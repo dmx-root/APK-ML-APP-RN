@@ -5,7 +5,7 @@ import { ProfileInterface }             from '../view/ProfileInterface.jsx'
 import { createStackNavigator }         from '@react-navigation/stack';
 import { useFocusEffect }               from '@react-navigation/native';
 
-// console.log(RegisterInterfaz)
+
 const PlantaNavigator=createStackNavigator();
 export function AppVersionPlanta({navigation}){
     useFocusEffect(() => {

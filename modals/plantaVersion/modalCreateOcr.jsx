@@ -43,27 +43,31 @@ export function ModalCreateOcr({navigation}){
     async function loadInformationOp(data){
         try {
             const response=await ApiQueryOp.openOp(data);
-            // console.log(response.data)
-            setDetalletOpList(response.data.data);
 
-            currentOcr.moduloId=newModulo;
-            currentOcr.startTime=new Date().toLocaleTimeString();
-            currentOcr.dete=new Date().toDateString();
+            if(response.data.statusCodeApi===1){
+                setDetalletOpList(response.data.data);
+                currentOcr.moduloId=newModulo;
+                currentOcr.startTime=new Date().toLocaleTimeString();
+                currentOcr.dete=new Date().toDateString();
+                setCurrentOcr(currentOcr);
+                const newOp={ 
+                    op:response.data.data[0].op,
+                    reference:response.data.data[0].ref,
+                    cantOcr:response.data.data[0].cant_ocr,
+                    cantPlanned:response.data.data[0].cant_planned_op,
+                    cantCompleted:response.data.data[0].cant_completed_op,
+                };
+                setCurrentOp(newOp);
+                setModalCreateOcrState(false);
+                setLoading(false);
+                navigation.navigate('RegisterInterfaz');
+            }
+            if(response.data.statusCodeApi===0){
+                Alert.alert('No se pudo ejecutar la acción',response.data.statusMessageApi);
+                setLoading(false);
+            } 
 
-            setCurrentOcr(currentOcr);
 
-            const newOp={ 
-                op:response.data.data[0].op,
-                reference:response.data.data[0].ref,
-                cantOcr:response.data.data[0].cant_ocr,
-                cantPlanned:response.data.data[0].cant_planned_op,
-                cantCompleted:response.data.data[0].cant_completed_op,
-            };
-
-            setCurrentOp(newOp);
-            setModalCreateOcrState(false);
-            setLoading(false);
-            navigation.navigate('RegisterInterfaz');
             
         } catch (error) {
             console.log(error);
@@ -133,11 +137,6 @@ export function ModalCreateOcr({navigation}){
                                     {modulosList.map(element=><Picker.Item style={{alignSelf:'center',color:currentColorMain4,fontSize:width*0.03}} label={element.mdl_label}    value={element.mdl_id} key={element.mdl_id} />)}
                                 </Picker>
                             </View>
-                            {/* <View style={StyleInterfazOCR.fieldinputContainer}>
-                                <TouchableOpacity style={StyleInterfazOCR.input}  onPress={()=>{}}>
-                                    <Text style={{justifyContent:'center', alignItems:'center',fontSize:width*0.03,color:'#777'}}>{}</Text>
-                                </TouchableOpacity>
-                            </View> */}
                         </View>
                     </View>
                         <View style={StyleInterfazOCR.actionContainer}>

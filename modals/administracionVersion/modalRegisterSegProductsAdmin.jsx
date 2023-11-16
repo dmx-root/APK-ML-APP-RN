@@ -5,6 +5,7 @@ import { useMainContex }                                from '../../context/main
 import { useAdminContext }                              from '../../context/adminContext';
 import { EmptyInterfaz }                                from '../../components/allVersions/emptyInterfaz';
 import { OcrSegComponentAdmin }                         from '../../components/adminVersion/ocrSegComponentAdmin';
+import { QueryDataOCR } from '../../api/apiConsults';
 
 
 const {height,width} =Dimensions.get('window')
@@ -21,7 +22,7 @@ export function ModalRegisterSegProductsAdmin(){
     const [ocrListColum2,setOcrListColum2]=useState([]);
     const [information,setInformation]=useState({});
     
-    // const ApiQueryOcr=new QueryDataOCR(DNS,'/api/ml/ocr/segundas/register/',userToken);
+    const ApiQueryOcr=new QueryDataOCR(DNS,'/api/ml/ocr/register/segundas/',userToken);
 
     const [currentValue,setCurrentValue]=useState({
         currentColor:'--- --- ---',
@@ -38,8 +39,22 @@ export function ModalRegisterSegProductsAdmin(){
 
     async function loadInformation(data){
         try {
-            // const response=await ApiQueryOcr.registerSegundasOcr(data);
+            const response=await ApiQueryOcr.registerSegundasOcr(data);
+
+            if(response.data.statusCodeApi===1){
+                setRegisterSegundas(false);
+                Alert.alert('¡Elementos enviados!','Elementos enviados con exito');
+            }
+            else if(response.data.statusCodeApi===0){
+                setRegisterSegundas(false);
+                Alert.alert('Elementos enviados',response.data.statusMessageApi);
+            }
+            else if(response.data.statusCodeApi===-1){
+                setRegisterSegundas(false);
+                Alert.alert('Error de inserción',response.data.statusMessageApi);
+            }
             // console.log(response.data)
+            
 
         } catch (error) {
             console.log(error);
@@ -73,8 +88,6 @@ export function ModalRegisterSegProductsAdmin(){
                 moduloId:informationSegundas.modulo,
                 ean:filterValue.ean_id,
                 cantidadUnidades:1,
-                startTime:new Date().toLocaleTimeString(),
-                finishTime:new Date().toLocaleTimeString(),
                 dete:new Date().toDateString(),
                 motivoParada:null
             };
@@ -92,21 +105,27 @@ export function ModalRegisterSegProductsAdmin(){
                     return element;
                 });
             }
-
+            // console.log(ocrList)
         }else{
             Alert.alert('¡Error en el código de barras!','El código de barras ingresado no pertenece a la OP seleccionada');
         }
     }
    
     const handlerSubmit=()=>{
-        if(ocrList.length!==0){ 
-
-            var bodyData={}
-            ocrList.forEach((element,index)=>{
-                bodyData[`element${index+1}`]=element;
-            });
-            // loadInformation(bodyData);
-            setRegisterSegundas(false);
+        if(ocrList.length!==0){
+            
+            const bodyData=ocrList.map(element=>{
+                const newdata={
+                    registerById:element.registerBy,
+                    moduloId:element.moduloId,
+                    unitsCant:element.cantidadUnidades,
+                    colorId:element.colorId,
+                    tallaId:element.tallaId,
+                    opId:element.op
+                }
+                return newdata;
+            })
+            loadInformation(bodyData);
 
         }else{
             Alert.alert('Elementos vacios','Asegurese de ingresar la información necesaria ')

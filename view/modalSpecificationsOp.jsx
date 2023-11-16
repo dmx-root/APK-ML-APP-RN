@@ -5,6 +5,7 @@ import {  Image, Alert,FlatList,TouchableWithoutFeedback }                      
 import { StyleSheet, Text, View, Dimensions,}                                       from 'react-native';
 import { useEffect, useState }                                                      from 'react';
 import { LoadingComponent } from '../components/loadingComponent';
+import { EmptyInterfaz } from '../components/allVersions/emptyInterfaz.jsx';
 
 const {width,height}=Dimensions.get('window');
 
@@ -29,9 +30,21 @@ export function ModalSpecificationsOp(){
         const ApiQueryOp=new QueryDataOp(DNS,'/api/ml/op/get/details/');
         try {
             const response=await ApiQueryOp.getAllSpecificationOp(opInfoInterfaz.op);
-            setSpeOp(response.data.data);
-            setLoading(false);
-            console.log(response.data.data)
+
+            if(response.data.statusCodeApi===1){
+                setSpeOp(response.data.data);
+                setLoading(false);
+            }
+            if(response.data.statusCodeApi===0){
+                setLoading(false);
+                Alert.alert('Error de colsulta',response.data.statusMessageApi);
+            }
+            if(response.data.statusCodeApi===-1){
+                setLoading(false);
+                Alert.alert('Error de procedimiento',response.data.statusMessageApi);
+            }
+
+            
         } catch (error) {
             console.log(error);
             Alert.alert('Error de servidor','Hubo un error a la hora de cargar la información, intentelo más tarde');
@@ -106,6 +119,7 @@ export function ModalSpecificationsOp(){
                         <View style={StyleInfoViewOP.root}>
                             {loading?
                             <LoadingComponent message={'Cargando lista de detalle de OP...'}/>:
+                            speOp.length===0?<EmptyInterfaz/>:
                             <FlatList style={StyleInfoViewOP.flatList} renderItem={item=>
                             <SpecificationsComponent data={item}/>} data={speOp} key={element=>element.tll_label}/>}
                             

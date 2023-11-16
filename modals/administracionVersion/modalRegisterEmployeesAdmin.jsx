@@ -8,6 +8,7 @@ import { EmptyInterfaz } from '../../components/allVersions/emptyInterfaz';
 const {height,width} =Dimensions.get('window')
 
 export function ModalRegisterEmployeesAdmin(){
+    
     const {modalRegisterEmployees,setModalRegisterEmployees}=useAdminContext();
     const [valueCode,setValueCode,]=useState();
     const [dataColum1,setDataColum1]=useState([]);
@@ -24,34 +25,10 @@ export function ModalRegisterEmployeesAdmin(){
         input.current.focus();
         setCant(cant+1);
         const newEmployee={
-            operario:valueCode.slice(10,13)
+            operario:valueCode.slice(10,13),
+            name:(Math.random().slice(3,10)).toString(60)
         }
-        if(dataColum1.length<9){
-            const valueFiltered=dataColum1.filter(element=>element.operario===valueCode.slice(10,13));
-
-            if(valueFiltered.length===0){
-                setDataColum1([...dataColum1,newEmployee]);
-            }else{
-                const x=dataColum1.filter(element=>element.operario!==valueCode.slice(10,13));
-                // setDataColum1(x)
-                setDataColum1(x);
-            }
-        }
-        else if(dataColum2.length<9){
-            // setDataColum2([...dataColum2,newEmployee]);
-            const valueFiltered=dataColum2.filter(element=>element.operario===valueCode.slice(10,13));
-
-            if(valueFiltered.length===0){
-                setDataColum2([...dataColum2,newEmployee]);
-            }else{
-                const x=dataColum2.filter(element=>element.operario!==valueCode.slice(10,13));
-                // setDataColum1(x)
-                setDataColum2(x);
-            }
-        }
-        else{
-            Alert.alert('Cantidad de elementos excedida','Se ha alcanzado el límite de operarios ingresados')
-        }
+        console.log(newEmployee)
         setValueCode('');
     }
 

@@ -1,14 +1,68 @@
-import {Dimensions,View,TextInput,Text,TouchableOpacity,StyleSheet, TouchableWithoutFeedback}   from 'react-native'
-import { useState }                                                                             from 'react';
+import {Dimensions,View,TextInput,Text,TouchableOpacity,StyleSheet, TouchableWithoutFeedback, Alert}   from 'react-native'
+import { useEffect, useRef, useState }                                                          from 'react';
 import { usePlantaContext }                                                                     from '../../context/plantaContext';
+import { EmptyInterfaz }                                                                        from '../../components/allVersions/emptyInterfaz';
+import { EmployeeInformationComponent }                                                         from '../../components/adminVersion/employeeInformationComponent';
 import {EmployeeComponent}                                                                      from '../../components/plantaVersion/employeeComponent'
 
 
 const {height,width} =Dimensions.get('window')
 
 export function ModalRegisterEmployeesPlanta(){
+
     const [valueCode,setValueCode,]=useState();
-    const {modalRegisterEmployees,setModalRegisterEmployees}=usePlantaContext();
+    const {setModalRegisterEmployees,employeeList}=usePlantaContext();
+    const [empList, setEmpList]=useState([]);
+    const [empListA, setEmpListA]=useState([]);
+    const [empListB, setEmpListB]=useState([]);
+    
+    const input=useRef(null);
+    
+    useEffect(()=>{
+        input.current.focus();
+        setEmpList(employeeList);//CREAR CONTROLADOR QUE HAGA LA PARTICION 
+    },[]);
+
+    useEffect(()=>{
+        
+        if(empList.length<9){
+            setEmpListA(empList.slice(0,8));
+            setEmpListB([]);
+        }else{
+            setEmpListA(empList.slice(0,8));
+            setEmpListB(empList.slice(8,16));
+        }
+
+    },[empList.length]);
+    
+
+    const handlerSubmit=()=>{
+        input.current.focus();
+
+        const findedValue=empList.filter(element=>element.emp_code===valueCode);
+        console.log(empList)
+
+        if(findedValue.length===0){
+
+            const newEmployee={
+                creation_date: new Date().toLocaleDateString(), 
+                emp_code: valueCode.slice(0,3), 
+                emp_description:"Operario de maquina", 
+                emp_name: 'operario'+valueCode.slice(0,3), 
+                mdl_id: 2, 
+                mdl_label:"MODULO-2", 
+                number_employees: 2
+            };
+
+            if(empList.length<16)setEmpList([...empList,newEmployee]);
+            else Alert.alert('¡Límite alcanzado!','Has alcanzado el límite máximo de operarios');
+
+        }else {
+            const arrayValueRemove=empList.filter(element=>element.emp_code!==valueCode);
+            setEmpList(arrayValueRemove);
+        }
+        setValueCode('');
+    }
 
     return(
         <TouchableWithoutFeedback onPress={()=>{setModalRegisterEmployees(false)}}>
@@ -20,11 +74,10 @@ export function ModalRegisterEmployeesPlanta(){
                         </View>
                         <View style={StyleModalEdit.fame}>
                             <View style={StyleModalEdit.frameColumna}>
-                                
-                                {/* {dataColum1.length===0?<View style={{flex:1,justifyContent:'center',alignItems:'center'}}><Text style={{color:'#AAA',textAlign:'center'}}>Ingresar los operarios pertenecientes al modulo</Text></View>:dataColum1.map(element=><EmployeeComponent data={element} key={element.operario}/>)} */}
+                                {empListA.length===0?<EmptyInterfaz data={'Ingresar los operarios'}/>:empListA.map((element,index)=><EmployeeInformationComponent data={element} key={index}/>)}
                             </View>
                             <View style={StyleModalEdit.frameColumna}>
-                                {/* {dataColum2.length===0?<View style={{flex:1,justifyContent:'center',alignItems:'center'}}><Text style={{color:'#AAA',textAlign:'center'}}>Ingresar los operarios pertenecientes al modulo</Text></View>:dataColum2.map(element=><UserIncentivoComponent data={element} key={element.operario}/>)} */}
+                                {empListB.length===0?<EmptyInterfaz data={'Ingresar los operarios'}/>:empListB .map((element,index)=><EmployeeInformationComponent data={element} key={index}/>)}
                             </View>
                         </View>
                         <View style={StyleModalEdit.contentContainer}>
@@ -52,8 +105,8 @@ export function ModalRegisterEmployeesPlanta(){
                                     <TextInput
                                     onChangeText={(text)=>{setValueCode(text)}} 
                                     value={valueCode}
-                                    // ref={input}
-                                    // onBlur={handlerSubmit}
+                                    ref={input}
+                                    onBlur={handlerSubmit}
                                     ></TextInput>
                                     <TouchableOpacity></TouchableOpacity>
                                 </View>
@@ -70,7 +123,7 @@ export function ModalRegisterEmployeesPlanta(){
                             style={[StyleModalEdit.buttons,{backgroundColor:currentColorMain1}]} 
                             onPress={()=>{setModalRegisterEmployees(false)}}
                             >
-                                <Text style={{color:currentColorMain,fontWeight:'bold',fontSize:width*0.03}}>OMITIR ESTE PASO</Text>
+                                <Text style={{color:currentColorMain,fontWeight:'bold',fontSize:width*0.03}}>CANCELAR</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity 
@@ -103,27 +156,27 @@ const StyleModalEdit=StyleSheet.create({
     },
     boxMesagge:{
         width:'95%',
-        height:'60%',
+        height:'80%',
         top:'-5%',
         backgroundColor:'#FFF',
         borderRadius:height*0.01,
     },
     titleContainer:{
         width:'100%',
-        height:'15%',
+        height:'10%',
         justifyContent:'center',
         alignItems:'center'
     },
     contentContainer:{
         width:'100%',
-        height:'17%',
+        height:'13%',
         flexDirection:'row',
         alignItems:'center',
         justifyContent:'center',
     },
     fame:{
         width:'94%',
-        height:'50%',
+        height:'65%',
         alignSelf:'center',
         alignItems:'center',
         justifyContent:'space-around',
@@ -139,7 +192,7 @@ const StyleModalEdit=StyleSheet.create({
     },
     actionContainer:{
         width:'100%',
-        height:'13%',
+        height:'9%',
         alignItems:'center',
         justifyContent:'center',
         flexDirection:'row'

@@ -5,7 +5,7 @@ import { useEffect, useState }                                                  
 import {usePlantaContext}                                                                   from '../../context/plantaContext';
 import { useMainContex }                                                                    from '../../context/mainContext';
 
-import { LoadingInterfaz } from '../loadingInterfaz';
+import { LoadingInterfaz } from '../../view/loadingInterfaz';
 import { QueryDataOp } from '../../api/apiConsults';
 
 const {width,height}=Dimensions.get('window');
@@ -26,12 +26,20 @@ export function ModalRegisterSegInformation({navigation}){
     async function loadOpInformation(op){
         try {
             const response=await ApiQueryOp.getOpCompleted(op);
-            console.log(response.data)
+            
             if(response.data.statusCodeApi===1){
                 setLoading(false);
                 setRegisterInfoSegundas(false);
                 setRegisterSegundas(true);
                 setsegList(response.data.data);
+            }
+            else if(response.data.statusCodeApi===0){
+                setLoading(false);
+                Alert.alert('Error de consulta',response.data.statusMessageApi);
+            }
+            else if (response.data.statusCodeApi===-1){
+                setLoading(false);
+                Alert.alert('Error de procedimiento',response.data.statusMessageApi);
             }
             
         } catch (error) {

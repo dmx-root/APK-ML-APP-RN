@@ -9,6 +9,7 @@ import { LayersIcon, MenuIcon, RefreshIcon, SearchIcon}                 from '..
 import { StyleSheet, Text, FlatList,View, Modal, Alert}                 from 'react-native';
 import { TextInput, Dimensions, TouchableOpacity,ActivityIndicator }    from 'react-native';
 import { useEffect, useState }                                          from 'react'; 
+import { LoadingComponent } from '../../components/loadingComponent.jsx';
 
 const {width,height}=Dimensions.get('screen');
 
@@ -30,12 +31,24 @@ export function MainInterfazFacturacion({navigation}){
     },[]);
     async function loadInformation(){
         try {
-            const response3=await ApiQueryUser.getSesion('none');
-            // console.log(response3.data.data)
-            setLoading(false);
-            setOpList(response3.data.data.opList);
-            setOcrList(response3.data.data.ocrList.slice(0,3));
-            setModulosList(response3.data.data.moduloList)
+            const response=await ApiQueryUser.getSesion('none');
+
+            if(response.data.statusCodeApi===1){
+                setLoading(false);
+                setOpList(response.data.data.opList);
+                setOcrList(response.data.data.ocrList.slice(0,3));
+                setModulosList(response.data.data.moduloList);
+            }
+            else if(response.data.statusCodeApi===0){
+                setLoading(false);
+                Alert.alert('Error de consulta',response.data.statusMessageApi);
+            }
+            else if(response.data.statusCodeApi===-1){
+                setLoading(false);
+                Alert.alert('Error de servidor',response.data.statusMessageApi);
+                
+            }
+            // console.log(response.data.data)
 
         } catch (error) {
             console.log(error);
@@ -43,14 +56,6 @@ export function MainInterfazFacturacion({navigation}){
         }
     }
 
-    if(loading){
-        return(
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{fontSize:height*0.02,color:'#888',marginBottom:'4%'}}>Cargando vista principal...</Text>
-            <ActivityIndicator size="large" />
-        </View>
-        )
-    }
     return(
         <View style={{height,width}}>
             <View style={StyleMainWindow.headerBack}></View>
@@ -79,7 +84,9 @@ export function MainInterfazFacturacion({navigation}){
                 </View>
                 <View style={StyleMainWindow.root1}>
                     <View style={StyleMainWindow.frame1}>
-                        {opList.length===0?
+                        {loading?
+                        <LoadingComponent/>:
+                        opList.length===0?
                         <EmptyInterfaz data={"Una vez se empiece a generar registros prodrá visualizar la información de las OP's aquí"}/>:
                         <FlatList renderItem={item=>
                         <OPcomponent data={item} />} data={opList}/>}
@@ -93,7 +100,8 @@ export function MainInterfazFacturacion({navigation}){
                 <View style={StyleMainWindow.root2}>
                     <View style={StyleMainWindow.frame2}>
 
-                        {ocrList.length===0?
+                        {loading?<LoadingComponent/>:
+                        ocrList.length===0?
                         <EmptyInterfaz data={"Una vez se empiece a generar registros prodrá visualizar la información de las OCR's aquí"}/>:
                         ocrList.map(element=><OcrComponent data={element} key={element.ocr_id}/>)}
                         {ocrList.length===0?<></>:<OcrComponentButtonFacturacion/>}

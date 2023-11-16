@@ -23,13 +23,22 @@ export function ModalCheckInUnidadesFacturacion(){
     async function loadInformation(){
         try {
             const response= await ApiQueryOcr.checkInOcr({ocrId:ocrInfoInterfaz.ocr_id,documentId:currentUser.user_document_id});
-            setIdElementRevise(ocrInfoInterfaz.ocr_id);
-            if(response.data.statusCodeApi==1){
+            if(response.data.statusCodeApi===1){
                 setSatusResponse(false);
                 setReviseState(true);
+                setIdElementRevise(ocrInfoInterfaz.ocr_id);
+                Alert.alert('¡Elemento revisado!','El elemento fue revisado con exito');
             }
-            // console.log(response.data)
-            
+            if(response.data.statusCodeApi===0){
+                setSatusResponse(false);
+                Alert.alert('¡Hubo un problema!',response.data.statusMessageApi);
+
+            }            
+            if(response.data.statusCodeApi===-1){
+                setSatusResponse(false);
+                Alert.alert('¡Error de inseción!',response.data.statusMessageApi);
+
+            }            
         } catch (error) {
             console.log(error);
             Alert.alert('Error de servidor','Huvo un problema a la hora de intentar cargar la información, inténtelo más tarde');

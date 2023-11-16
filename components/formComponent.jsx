@@ -1,6 +1,6 @@
 import { ActivityIndicator, StyleSheet, Text, View}                                from 'react-native';
 import { Dimensions,TouchableOpacity}                           from 'react-native';
-import { Lock, User2}                                           from '../view/iconosSvg.jsx';
+import { Lock, User3}                                           from '../view/iconosSvg.jsx';
 import { useMainContex }                                        from '../context/mainContext.jsx';
 import { LoadingComponent } from './loadingComponent.jsx';
 
@@ -24,7 +24,7 @@ export function FormComponent({setModalLabel,loading}){
         <View style={signOutStyle.fieldsContainer}>
             <View style={signOutStyle.inputContainer}>
                 <View  style={signOutStyle.lock}>
-                    <User2/>
+                    <User3/>
                 </View>
                 <Text style={signOutStyle.label}>Documento</Text>
                 <TouchableOpacity onPress={()=>{handlerModalInput('userDocumentId')}}>

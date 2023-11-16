@@ -28,12 +28,19 @@ export function ModalRegisterSegInformationAdmin({navigation}){
     async function loadOpInformation(op){
         try {
             const response=await ApiQueryOp.getOpCompleted(op);
-            console.log(response.data)
             if(response.data.statusCodeApi===1){
                 setLoading(false);
                 setRegisterInfoSegundas(false);
                 setRegisterSegundas(true);
                 setsegList(response.data.data);
+            }
+            else if(response.data.statusCodeApi===0){
+                setLoading(false);
+                Alert.alert('Error de consulta',response.data.statusMessageApi);
+            }
+            else if(response.data.statusCodeApi===-1){
+                setLoading(false);
+                Alert.alert('Error de Servidor',response.data.statusMessageApi);
             }
             
         } catch (error) {

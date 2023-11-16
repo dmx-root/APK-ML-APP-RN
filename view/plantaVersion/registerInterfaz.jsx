@@ -7,13 +7,12 @@ import { ModalAlert }                                           from '../../comp
 import { OpRegisterComponent }                                  from '../../components/plantaVersion/opRegisterComponent.jsx';
 import { ModuloRegisterComponent }                              from '../../components/plantaVersion/moduloRegisterComponent.jsx';
 import { InformationRegisterComponent }                         from '../../components/plantaVersion/informationRegisterComponent.jsx';
+import { QueryDataOCR }                                         from '../../api/apiConsults.js';
 import { ModalEditUnits }                                       from './modalEditUnits';
 import { ModalRegister }                                        from './modalRegister';
 import { StyleSheet, Text, View, Modal,Alert }                  from 'react-native';
 import { Dimensions, TouchableOpacity, ActivityIndicator}       from 'react-native';
 import { useEffect, useState }                                  from 'react';
-
-import { QueryDataOCR } from '../../api/apiConsults.js';
 
 const {width,height}=Dimensions.get('window')
 
@@ -39,9 +38,16 @@ export function RegisterInterfaz({navigation}){
         const ApiQueryOcr=new QueryDataOCR(DNS,'/api/ml/ocr/register/',userToken);
         try {
             const response=await ApiQueryOcr.registerOcr(data);
-            console.log(response.data);
-            setLoading(false);
-            navigation.navigate('MainViewContainer');  
+            if(response.data.statusCodeApi===1){
+                setLoading(false);
+                navigation.navigate('MainViewContainer');  
+            }
+            else if(response.data.statusCodeApi===0){
+                Alert.alert('Error en el proceso',response.data.statusMessageApi);
+            }
+            else if(response.data.statusCodeApi===-1){
+                Alert.alert('Error de inserción',response.data.statusMessageApi);
+            }
         } catch (error) {
             console.log(error);
             setLoading(false);

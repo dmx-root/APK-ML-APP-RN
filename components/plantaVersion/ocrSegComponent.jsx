@@ -16,7 +16,7 @@ export function OcrSegComponent({data,modulo}){
     const handlerTouch=()=>{
         setModalComponentSeg(true);
     }
-
+    console.log(data)
     return(
         <TouchableOpacity style={StyleInfoViewOcr.header1} onPress={handlerTouch}>
             <View style={StyleInfoViewOcr.iconContainer}>

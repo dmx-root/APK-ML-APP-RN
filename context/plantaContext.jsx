@@ -21,6 +21,7 @@ export function  PlantaContextProvider({children}){
     const [modalValidationOcr,setModalValidationOcr]=useState(false);
     const [modalBluetoothDivices,setModalBluetoothDivices]=useState(false);
     const [modalRegisterSegundas,setRegisterSegundas]=useState(false);
+    const [modalRegisterModulo,setRegisterModulo]=useState(false);
     const [modalRegisterInfoSegundas,setRegisterInfoSegundas]=useState(false);
     const [modalComponentSeg,setModalComponentSeg]=useState(false);
     const [asideState,setAsideState]= useState(false);
@@ -63,6 +64,7 @@ export function  PlantaContextProvider({children}){
     const [detalleOpList,setDetalletOpList]=useState([]);
     const [eventosImproductivos, setEventosImproductivos]=useState([]);
     const [modulosList,setModulosList]=useState([]);
+    const [employeeList,setEmployeeList]=useState([]);
 
     //use reducer
     class AsyncStorageManagement{
@@ -117,6 +119,7 @@ export function  PlantaContextProvider({children}){
         modalRegisterSegundas,setRegisterSegundas,
         modalRegisterInfoSegundas,setRegisterInfoSegundas,
         modalComponentSeg,setModalComponentSeg,
+        modalRegisterModulo,setRegisterModulo,
         asideState,setAsideState,
         currentOcr,setCurrentOcr,
         segList,setsegList,
@@ -126,7 +129,7 @@ export function  PlantaContextProvider({children}){
         eventosImproductivos, setEventosImproductivos,
         statusReques,setStatusReques,
         modulosList,setModulosList,
-
+        employeeList,setEmployeeList,
         AsyncStorageManagement
     }
 

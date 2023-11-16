@@ -52,16 +52,24 @@ export function MainInterfazAdmin({navigation}){
 
     async function loadInformation(UserDocumentId){
         try {
-            const response3=await ApiQueryUser.getSesion(UserDocumentId);
-            console.log(response3.data.data.opList);
-            setLoading(false);
-            setOpList(response3.data.data.opList);
-            setFilterOp(response3.data.data.opList);
-            setOcrList(response3.data.data.ocrList.slice(0,4));
-            setEventosImproductivos(response3.data.data.anomalyList);
-            setModulosList(response3.data.data.moduloList);
-            setLoading(false);
-
+            const response=await ApiQueryUser.getSesion(UserDocumentId);
+            if(response.data.statusCodeApi===1){
+                console.log('entro');
+                setLoading(false);
+                setOpList(response.data.data.opList);
+                setFilterOp(response.data.data.opList);
+                setOcrList(response.data.data.ocrList.slice(0,4));
+                setEventosImproductivos(response.data.data.anomalyList);
+                setModulosList(response.data.data.moduloList);
+                setLoading(false);
+            }
+            else if(response.data.statusCodeApi===0){
+                setLoading(false);
+                Alert.alert('Error de consulta',response.data.data.statusMessageApi)   
+            }
+            else if(response.data.statusCodeApi===-1){
+                Alert.alert('Error de servidor',response.data.data.statusMessageApi)   
+            }
         } catch (error) {
             console.log(error);
             Alert.alert('Error de servidor','Hubo un problema a la hora de intentar cargar los datos')

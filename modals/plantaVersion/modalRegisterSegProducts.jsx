@@ -1,23 +1,23 @@
-import {Dimensions,View,TextInput,Text,TouchableOpacity,StyleSheet, TouchableWithoutFeedback, Alert} from 'react-native'
-import { useState, useRef, useEffect } from 'react';
-import { usePlantaContext } from '../../context/plantaContext';
-import {EmptyInterfaz} from '../allVersions/emptyInterfaz';
-import { OcrSegComponent } from './ocrSegComponent';
-import { useMainContex } from '../../context/mainContext';
-import { QueryDataOCR } from '../../api/apiConsults';
-
+import {Dimensions,View,TextInput,Text,TouchableOpacity,StyleSheet, TouchableWithoutFeedback, Alert}    from 'react-native'
+import { useState, useRef, useEffect }                                                                  from 'react';
+import { usePlantaContext }                                                                             from '../../context/plantaContext';
+import {EmptyInterfaz}                                                                                  from '../../components/allVersions/emptyInterfaz';
+import { OcrSegComponent }                                                                              from '../../components/plantaVersion/ocrSegComponent';
+import { useMainContex }                                                                                from '../../context/mainContext';
+import { QueryDataOCR }                                                                                 from '../../api/apiConsults';
 
 const {height,width} =Dimensions.get('window')
 
-export function ModalRegisterSegProducts(){
+export function ModalRegisterSegProductsPlanta(){
    
-    
     const {setRegisterSegundas,segList,informationSegundas}=usePlantaContext();
     const {currentUser,DNS,userToken} =useMainContex();
     
     const [valueCode,setValueCode,]=useState();
-    const [ocrList,setOcrList]=useState([]);
     const [information,setInformation]=useState({});
+    const [ocrList,setOcrList]=useState([]);
+    const [ocrListA,setOcrListA]=useState([]);
+    const [ocrListB,setOcrListB]=useState([]);
     
     const ApiQueryOcr=new QueryDataOCR(DNS,'/api/ml/ocr/register/segundas',userToken);
 
@@ -36,13 +36,23 @@ export function ModalRegisterSegProducts(){
 
     },[]);
 
+    useEffect(()=>{
+        ocrList.length>3?setOcrListB(ocrList.slice(3,6)):setOcrListA(ocrList.slice(0,3));
+    },[ocrList.length]);
+
     async function loadInformation(data){
         try {
             const response=await ApiQueryOcr.registerSegundasOcr(data);
             if(response.data.statusCodeApi===1){
+                Alert.alert('¡Elementos enviados!','Elementos enviados con exito');
                 setRegisterSegundas(false)
             }
-            console.log(response.data)
+            else if(response.data.statusCodeApi===0){
+                Alert.alert('Error de proceso',response.data.statusMessageApi);
+            }
+            else if(response.data.statusCodeApi===-1){
+                Alert.alert('Error de inserción',response.data.statusMessageApi);
+            }
         } catch (error) {
             console.log(error);
             Alert.alert('Error de servidor','Hubo un error a la hora de intentar cargar la información, intentelo más tarde');
@@ -71,12 +81,12 @@ export function ModalRegisterSegProducts(){
                 unitsCant:1,
                 tallaId:filterValue.tll_id,
                 colorId:filterValue.color_id,
+                colorLabel:filterValue.color_label,
                 opId:filterValue.op,
                 ean:filterValue.ean_id,
             };
             
             const valueFinded=ocrList.filter(element=>element.ean===valueCode);
-            console.log(valueFinded)
             if(valueFinded.length===0){
 
                 setOcrList([...ocrList,newOcr]);
@@ -89,8 +99,8 @@ export function ModalRegisterSegProducts(){
                     }
                     return element;
                 });
-                // console.log(alterList);
             }
+            
         }else{
             Alert.alert('¡Error en el código de barras!','El código de barras ingresado no pertenece a la OP seleccionada');
         }
@@ -109,7 +119,7 @@ export function ModalRegisterSegProducts(){
                 }
                 return newBodyData
             });
-            console.log(bodyData)
+
             loadInformation(bodyData);
 
         }else{
@@ -167,14 +177,15 @@ export function ModalRegisterSegProducts(){
                         </View>
                         <View style={StyleModalEdit.fame}>
                             <View style={StyleModalEdit.frameColumna}>
-                                {ocrList.length===0?<EmptyInterfaz/>:ocrList.map(element=><OcrSegComponent key={element.ean} data={element} modulo={informationSegundas.modulo}/>)}
+                                {ocrListA.length===0?<EmptyInterfaz/>:ocrListA.map(element=><OcrSegComponent key={element.ean} data={element} modulo={informationSegundas.modulo}/>)}
                                 {/* <EmptyInterfaz/> */}
                                 {/* <OcrSegComponent/>
                                 <OcrSegComponent/>
-                                <OcrSegComponent/> */}
+                            <OcrSegComponent/> */}
                             </View>
                             <View style={StyleModalEdit.frameColumna}>
-                                <EmptyInterfaz/>
+                                {ocrListB.length===0?<EmptyInterfaz/>:ocrListB.map(element=><OcrSegComponent key={element.ean} data={element} modulo={informationSegundas.modulo}/>)}
+                                {/* <EmptyInterfaz/> */}
                             </View>
                         </View>
                         <View style={StyleModalEdit.contentContainer}>

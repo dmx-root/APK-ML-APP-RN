@@ -23,9 +23,10 @@ export function Login(){
     }
     async function getDataUser(data){
         const ApiQueryUsers=new QueryDataUsers(DNS,'/api/ml/auth/login/',data.userTokenId);
+        
         try {
             const response1=await ApiQueryUsers.getData(data);
-            // console.log(response1.data)
+            console.log(response1.data)
             if(response1.data.statusCodeApi===1){
                     Alert.alert('¿DESEA GUARDAR LOS DATOS?','Esto le permite tener la sesión iniciada',
                     [
@@ -41,7 +42,7 @@ export function Login(){
                     }, style: 'cancel'},
                 ]);
             }
-            if(response1.data.statusResponse===0) Alert.alert('Datos erroneos',response1.data.message)
+            if(response1.data.statusCodeApi===0) Alert.alert('Datos erroneos',response1.data.statusMessageApi);
         } catch (error) {
             console.log(error);
             Alert.alert('Error de servidor','Error al tratar de ingresar')

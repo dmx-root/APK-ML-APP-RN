@@ -112,10 +112,10 @@ export class QueryDataOCR{
         }
         return await axios(config);
     }
-    async getAllOcr(){
+    async getAllOcr(ctg_id){
         const config={
             method:'get',
-            url:this.uri+this.path
+            url:this.uri+this.path+ctg_id
         }
         return await axios(config);
     }
@@ -160,6 +160,16 @@ export class QueryDataModulo{
         this.userToken=userToken;
     }
     async getOcrByModulo(moduloId){
+        const config = {
+            method: 'get',
+            url:this.uri+this.path+moduloId,
+            headers:{
+                "access-token-auth":this.userToken
+            }
+            };
+        return await axios(config); 
+    }
+    async getEmployeesByModulo(moduloId){
         const config = {
             method: 'get',
             url:this.uri+this.path+moduloId,

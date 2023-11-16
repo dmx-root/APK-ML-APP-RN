@@ -45,8 +45,18 @@ export function ModalModulosOcrList(){
         try {
             
             const response=await ApiQueryModulo.getOcrByModulo(moduloId);
-            setOcrList(response.data.data.ocrList);
-            setLoading(false);
+            if(response.data.statusCodeApi===1){
+                setOcrList(response.data.data.ocrList);
+                setLoading(false);
+            }
+            else if(response.data.statusCodeApi===0){
+                setLoading(false);
+                Alert.alert('Error de consulta',response.data.statusMessageApi);
+            }
+            else if(response.data.statusCodeApi===-1){
+                setLoading(false);
+                Alert.alert('Error de servidor',response.data.statusMessageApi);
+            }
 
         } catch (error) {
             console.log(error),

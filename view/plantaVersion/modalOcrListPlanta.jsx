@@ -31,9 +31,19 @@ export function ModalOcrListPlanta(){
         const ApiQueryOcr=new QueryDataOCR(DNS,'/api/ml/ocr/getByOp/');
         try {
            const response= await ApiQueryOcr.getOcrBySpeOp({op:opSpeInfoInterfaz.op_id,color:opSpeInfoInterfaz.color_id,talla:opSpeInfoInterfaz.tll_id});
-           setOcrList(response.data.data);
-        //    console.log(response.data.data);
-            setLoading(false);
+           if(response.data.statusCodeApi===1){
+                console.log('entró')
+                setOcrList(response.data.data);
+                setLoading(false);
+            }
+            if(response.data.statusCodeApi===0){
+                setLoading(false);
+                Alert.alert('Error de colsulta',response.data.statusMessageApi);
+            }
+            if(response.data.statusCodeApi===-1){
+                setLoading(false);
+                Alert.alert('Error de procedimiento',response.data.statusMessageApi);
+            }
 
         } catch (error) {
             console.log(error);
